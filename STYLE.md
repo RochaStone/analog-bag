@@ -11,7 +11,7 @@ The tools look in this order and use the first one they find:
 3. `~/.rocha-coded/style.json`, for one style across every project
 4. the bundled example, `examples/style.rocha-coded.json`
 
-Anything you leave blank falls back to the example. Start from `style.example.json`.
+Start from `style.example.json`. If you leave a colour or a font blank, the example's is used. Your words never come from the example: a line, name or handle you leave blank stays blank, and that spot is left off the page.
 
 ## The keys
 | Key | What it is | Used in Analog Bag |
@@ -38,10 +38,10 @@ Anything you leave blank falls back to the example. Start from `style.example.js
 | `lines.todo` | Your to-do line | top of the week page |
 | `lines.stamp` | One big word | card backs |
 | `lines.scrawl` | Your handwritten line | card backs, launch page footer |
-| `lines.masthead`, `headline`, `celebrate`, `affirm` | More of your words | other Rocha Coded tools |
+| `lines.masthead`, `headline`, `celebrate`, `affirm`, `invite` | More of your words (`invite` is optional) | other Rocha Coded tools |
 | `references` | Images or links Claude looks at when you say "make it mine" | read by Claude, not the scripts |
 | `notes` | Your taste in a sentence or two | read by Claude |
 
 Colours are `#RRGGBB`. Fonts are Google Fonts names, like `Cormorant Garamond`. A font that isn't on Google Fonts falls back to a system font. A colour or font name that looks wrong is skipped, and the example's value is used instead.
 
-Your own words go in `lines`. Leave a line blank and that spot uses the example's line.
+Your own words go in `lines`. Rocha's lines only appear when no style.json of yours is found.

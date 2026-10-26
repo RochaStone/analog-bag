@@ -3,7 +3,8 @@
 Fallback order (the same in every Rocha Coded tool):
     an explicit --style path -> ./style.json -> ~/.rocha-coded/style.json
     -> the bundled examples/style.rocha-coded.json
-Any key the user's file leaves out or leaves blank falls back to the bundled example.
+A user's file inherits only palette and fonts from the bundled example. Her words and
+identity never carry over: what the user leaves out is blank.
 See STYLE.md for the keys.
 """
 from __future__ import annotations
@@ -30,6 +31,8 @@ FALLBACK_STACKS = {
 # css variable <- palette key
 PALETTE_VARS = {"hot": "hero", "candy": "accent", "paper": "paper_pink", "cream": "paper",
                 "ink": "ink", "red": "marker", "plum": "plum", "gold": "gold", "blue": "cool"}
+
+IDENTITY_KEYS = ("name", "owner", "handle", "site", "notes")
 
 _active: dict | None = None
 _source: str = ""
@@ -58,9 +61,15 @@ def find_style(explicit: str | None = None) -> Path:
 
 
 def _merge(base: dict, user: dict) -> tuple[dict, list[str]]:
-    """User values over the bundled example. Blank values fall back. Bad colours and
-    font names are dropped with a warning instead of reaching the page."""
+    """User values over the bundled example. Only palette and fonts may fall back to
+    the example. Her words and identity (lines, owner, handle, name, site, references,
+    notes) never do: anything the user leaves out is blank and left off the page.
+    Bad colours and font names are dropped with a warning instead of reaching the page."""
     out, warnings = json.loads(json.dumps(base)), []
+    out["lines"] = {k: "" for k in base.get("lines", {})}
+    for key in IDENTITY_KEYS:
+        out[key] = ""
+    out["references"] = []
     for key, val in user.items():
         if key in ("palette", "fonts", "lines") and isinstance(val, dict):
             for k, v in val.items():

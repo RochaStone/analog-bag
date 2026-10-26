@@ -58,7 +58,31 @@ class StyleTests(unittest.TestCase):
                 os.chdir(old)
         self.assertEqual(st["palette"]["hero"], "#FF2D8A")  # unsafe colour refused
         self.assertEqual(st["fonts"]["body"], "Newsreader")  # unsafe font name refused
-        self.assertEqual(st["lines"]["todo"], "TO DO: BUILD YOUR FOUNDER WORLD")  # blank falls back
+        self.assertEqual(st["lines"]["todo"], "")  # her words never fall back
+
+    def test_user_style_never_inherits_her_words(self):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            "tarot_print_style", Path(S.__file__).resolve().parent.parent / "tarot" / "print.py")
+        tp = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(tp)
+        with tempfile.TemporaryDirectory() as d:
+            path = Path(d, "style.json")
+            path.write_text(json.dumps({"palette": {"hero": "#1F6F8B"}}))
+            st = S.use(str(path))
+            week = self.week_html()
+            card_back = tp.back("tarot", 0, 0)
+        self.assertEqual(st["palette"]["plum"], "#4A1033")    # palette may fall back
+        self.assertEqual(st["fonts"]["scrawl"], "Permanent Marker")  # fonts may fall back
+        self.assertTrue(all(v == "" for v in st["lines"].values()))
+        for k in ("name", "owner", "handle", "site", "notes"):
+            self.assertEqual(st[k], "", k)
+        self.assertEqual(st["references"], [])
+        for html in (week, card_back):
+            for hers in ("FOUNDER WORLD", "founder world", "LORE", "@rocheverse", "ROCHEVERSE"):
+                self.assertNotIn(hers, html)
+        S.use(str(S.BUNDLED))
+        self.assertIn("LORE", tp.back("tarot", 0, 0))  # her lines appear only with her whole file
 
     def test_bundled_files_share_keys(self):
         root = Path(S.__file__).resolve().parent.parent

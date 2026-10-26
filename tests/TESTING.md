@@ -6,7 +6,7 @@ Run from the repo root:
 python3 -m unittest -v
 ```
 
-35 tests, standard library only. One test renders a real PDF and skips itself when no Chrome is found.
+36 tests, standard library only. One test renders a real PDF and skips itself when no Chrome is found.
 
 ## What the tests prove
 - **Moon phases.** All 13 full moons of 2026 land within one day, and in fact within two minutes, of NASA GSFC's
@@ -28,8 +28,9 @@ python3 -m unittest -v
   for waning moons and the southern sky.
 
 - **Style.** A second `style.json` renders the week page with its own to-do line, hero colour, font
-  and handle; keys it leaves out fall back to the bundled example; the fallback order finds
-  `./style.json`; unsafe colours and font names are refused; both bundled style files share keys.
+  and handle. A user's file borrows only missing colours and fonts from the bundled example: her
+  lines, name, handle, site, references and notes stay blank, and the week page and card back show
+  none of Rocha's words. The fallback order finds `./style.json`; unsafe colours and font names are refused; both bundled style files share keys.
 
 ## What was checked by eye, not by test
 - Every printable was rendered to PNG with headless Chrome on macOS and looked at: the wordiest cards fit at

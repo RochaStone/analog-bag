@@ -123,7 +123,8 @@ Every page reads one `style.json`: her palette, fonts, handle and her own lines 
 the week page, `lines.stamp` and `lines.scrawl` on card backs and the launch page). The scripts
 look for `--style PATH`, then `./style.json` in her folder, then `~/.rocha-coded/style.json`, then
 the bundled example (`examples/style.rocha-coded.json`, Rocha's own look). Each script prints
-which style it used. The keys are in `STYLE.md`.
+which style it used. Her file borrows only missing colours and fonts from the example. Lines,
+name and handle she leaves out stay blank on the page, never Rocha's words. The keys are in `STYLE.md`.
 
 If she has no style.json, offer to make one before her first printable:
 1. Ask for 3 to 5 references (screenshots, links, a Pinterest board), a palette if she has one,
