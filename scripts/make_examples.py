@@ -90,7 +90,7 @@ HERO_BODY = """<div class='desk'>
 <img class='shot week' src='{week}' alt=''>
 <div class='tape' style='left:1120px;top:100px;transform:rotate(6deg)'></div>
 <div class='title'><small>ROCHA CODED</small>ANALOG<br>BAG</div>
-<div class='scrawl'>plan in pen. Claude reads it back.</div>
+<div class='scrawl'>build your founder world</div>
 <img class='shot tarot' src='{tarot}' alt=''>
 </div>"""
 

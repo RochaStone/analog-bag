@@ -53,6 +53,8 @@ body{background:#fff}
 .back .word{font-family:var(--didone);color:var(--candy);font-size:1.7em;letter-spacing:.12em;text-transform:uppercase}
 .back .moons{display:flex;gap:1.2mm}
 .back .sub{color:var(--gold);font-size:.62em}
+.back .lore{font-family:var(--marker);color:var(--candy);font-size:3.2em;line-height:1;transform:rotate(-4deg)}
+.back .under{font-family:var(--didone);font-style:italic;color:var(--cream);font-size:.8em;margin-top:-1mm}
 .cut{position:absolute;border-color:#9b8a93;border-style:dashed;border-width:0}
 .cut.v{border-left-width:.2mm;width:0}
 .cut.h{border-top-width:.2mm;height:0}
@@ -99,7 +101,8 @@ def back(size: str, x: float, y: float) -> str:
     moons = "".join(moon_svg(a, round(6 * s, 1)) for a in (0.12, 0.25, 0.5, 0.75, 0.88))
     return (f"<div class='card back' style='left:{x}mm;top:{y}mm'><div class='frame'></div><div class='inner'>"
             f"<div class='moons'>{moons}</div>{glyph_svg('eye', round(30 * s, 1))}"
-            f"<div class='word'>Hook Tarot</div><div class='sub tag'>pull three &middot; write one</div>"
+            f"<div class='lore'>LORE</div><div class='under'>thriving in transformational times.</div>"
+            f"<div class='sub tag'>Hook Tarot</div>"
             f"<div class='moons'>{moons}</div></div></div>")
 
 

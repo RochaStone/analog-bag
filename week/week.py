@@ -34,7 +34,7 @@ body{background:#fff}
 .kicker{color:var(--hot);font-size:7pt}
 h1{font-family:var(--didone);font-weight:900;color:var(--hot);font-size:31pt;line-height:.95;letter-spacing:-.01em}
 .range{font-size:8.6pt;text-align:right}
-.range .marker{font-size:10pt;display:block;transform:rotate(-3deg)}
+.range .marker{font-size:9pt;display:block;transform:rotate(-3deg);margin-bottom:1mm}
 .moons{display:grid;grid-template-columns:repeat(7,1fr);gap:1mm;margin:3.5mm 0 3mm;padding:2mm 1.5mm;background:var(--plum);border-radius:1.6mm}
 .day{display:flex;flex-direction:column;align-items:center;color:var(--cream);font-size:6.4pt;gap:.6mm}
 .day .tag{color:var(--gold);font-size:5.6pt}
@@ -94,7 +94,7 @@ def sheet(start: date, days: list[dict], hemi: str, fill: dict) -> str:
     num = fill.get("number")
     return (f"<section class='week lined grain'>"
             f"<div class='top'><div><div class='kicker tag'>Pocket week</div><h1>THIS<br>WEEK</h1></div>"
-            f"<div class='range'><span class='marker'>you've got this</span>{esc(nice(start))} to {esc(nice(end))} {end.year}</div></div>"
+            f"<div class='range'><span class='marker'>TO DO: BUILD YOUR FOUNDER WORLD</span>{esc(nice(start))} to {esc(nice(end))} {end.year}</div></div>"
             f"<div class='moons'>{strip}</div>"
             f"<div class='label tag'>The one thing</div><div class='one'>{one_lines}</div>"
             f"<div class='label tag'>Three moves</div>{move_rows}"
