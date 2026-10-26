@@ -1,0 +1,228 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Rocha Coded//analog-bag//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Launch: Spring Breath Retreat
+BEGIN:VEVENT
+UID:816d942c923b6875a9e1@analog-bag
+DTSTAMP:20261026T022717Z
+DTSTART;VALUE=DATE:20261102
+DTEND;VALUE=DATE:20261103
+SUMMARY:Seed: tell the origin story (Spring Breath Retreat)
+TRANSP:TRANSPARENT
+DESCRIPTION:Plant the idea before you sell it. Waning crescent. Clear space
+ . Whisper the idea.
+CATEGORIES:Launch
+END:VEVENT
+BEGIN:VEVENT
+UID:f20a389eb2dc31dd3886@analog-bag
+DTSTAMP:20261026T022717Z
+DTSTART;VALUE=DATE:20261106
+DTEND;VALUE=DATE:20261107
+SUMMARY:Seed: name the problem out loud (Spring Breath Retreat)
+TRANSP:TRANSPARENT
+DESCRIPTION:Plant the idea before you sell it. Waning crescent. Clear space
+ . Whisper the idea.
+CATEGORIES:Launch
+END:VEVENT
+BEGIN:VEVENT
+UID:45960e60c1f3b9e0b64c@analog-bag
+DTSTAMP:20261026T022717Z
+DTSTART;VALUE=DATE:20261109
+DTEND;VALUE=DATE:20261110
+SUMMARY:Build: show the receipts (Spring Breath Retreat)
+TRANSP:TRANSPARENT
+DESCRIPTION:Warm the room. Let them lean in. New moon. Plant it. Say it bef
+ ore it's perfect.
+CATEGORIES:Launch
+END:VEVENT
+BEGIN:VEVENT
+UID:82d27732b25cc0e807fe@analog-bag
+DTSTAMP:20261026T022717Z
+DTSTART;VALUE=DATE:20261109
+DTEND;VALUE=DATE:20261110
+SUMMARY:New moon
+TRANSP:TRANSPARENT
+DESCRIPTION:Exact time 2026-11-09 07:01 UTC. New moon. Plant it. Say it bef
+ ore it's perfect.
+CATEGORIES:Moon
+END:VEVENT
+BEGIN:VEVENT
+UID:55084e053510bd2e5655@analog-bag
+DTSTAMP:20261026T022717Z
+DTSTART;VALUE=DATE:20261112
+DTEND;VALUE=DATE:20261113
+SUMMARY:Build: teach the one thing they get wrong (Spring Breath Retreat)
+TRANSP:TRANSPARENT
+DESCRIPTION:Warm the room. Let them lean in. New moon. Plant it. Say it bef
+ ore it's perfect.
+CATEGORIES:Launch
+END:VEVENT
+BEGIN:VEVENT
+UID:a97e768c229d809ed590@analog-bag
+DTSTAMP:20261026T022717Z
+DTSTART;VALUE=DATE:20261114
+DTEND;VALUE=DATE:20261115
+SUMMARY:Build: open the waitlist (Spring Breath Retreat)
+TRANSP:TRANSPARENT
+DESCRIPTION:Warm the room. Let them lean in. New moon. Plant it. Say it bef
+ ore it's perfect.
+CATEGORIES:Launch
+END:VEVENT
+BEGIN:VEVENT
+UID:ba65fae40cfa00b1f658@analog-bag
+DTSTAMP:20261026T022717Z
+DTSTART;VALUE=DATE:20261117
+DTEND;VALUE=DATE:20261118
+SUMMARY:Open: open the doors (Spring Breath Retreat)
+TRANSP:TRANSPARENT
+DESCRIPTION:Say it plainly. The doors are open. First quarter. Build and de
+ cide. Momentum loves a choice.
+CATEGORIES:Launch
+END:VEVENT
+BEGIN:VEVENT
+UID:a2af26e195fd434f6548@analog-bag
+DTSTAMP:20261026T022717Z
+DTSTART;VALUE=DATE:20261117
+DTEND;VALUE=DATE:20261118
+SUMMARY:First quarter
+TRANSP:TRANSPARENT
+DESCRIPTION:Exact time 2026-11-17 11:47 UTC. First quarter. Build and decid
+ e. Momentum loves a choice.
+CATEGORIES:Moon
+END:VEVENT
+BEGIN:VEVENT
+UID:aa2146637d8253d4bce8@analog-bag
+DTSTAMP:20261026T022717Z
+DTSTART;VALUE=DATE:20261119
+DTEND;VALUE=DATE:20261120
+SUMMARY:Open: send the letter to the waitlist (Spring Breath Retreat)
+TRANSP:TRANSPARENT
+DESCRIPTION:Say it plainly. The doors are open. First quarter. Build and de
+ cide. Momentum loves a choice.
+CATEGORIES:Launch
+END:VEVENT
+BEGIN:VEVENT
+UID:a8262e68a24098a7b118@analog-bag
+DTSTAMP:20261026T022717Z
+DTSTART;VALUE=DATE:20261122
+DTEND;VALUE=DATE:20261123
+SUMMARY:Open: go live and say the price (Spring Breath Retreat)
+TRANSP:TRANSPARENT
+DESCRIPTION:Say it plainly. The doors are open. First quarter. Build and de
+ cide. Momentum loves a choice.
+CATEGORIES:Launch
+END:VEVENT
+BEGIN:VEVENT
+UID:1aa0cc44c28744d5b08d@analog-bag
+DTSTAMP:20261026T022717Z
+DTSTART;VALUE=DATE:20261124
+DTEND;VALUE=DATE:20261125
+SUMMARY:Peak: answer the three objections (Spring Breath Retreat)
+TRANSP:TRANSPARENT
+DESCRIPTION:Be everywhere you already are. Full moon. Everything is lit. Be
+  seen.
+CATEGORIES:Launch
+END:VEVENT
+BEGIN:VEVENT
+UID:535a17968f897ec6c4c1@analog-bag
+DTSTAMP:20261026T022717Z
+DTSTART;VALUE=DATE:20261124
+DTEND;VALUE=DATE:20261125
+SUMMARY:Full moon
+TRANSP:TRANSPARENT
+DESCRIPTION:Exact time 2026-11-24 14:53 UTC. Full moon. Everything is lit. 
+ Be seen.
+CATEGORIES:Moon
+END:VEVENT
+BEGIN:VEVENT
+UID:dada8c1c49671a96c161@analog-bag
+DTSTAMP:20261026T022717Z
+DTSTART;VALUE=DATE:20261126
+DTEND;VALUE=DATE:20261127
+SUMMARY:Peak: share a client's words\, with her permission (Spring Breath R
+ etreat)
+TRANSP:TRANSPARENT
+DESCRIPTION:Be everywhere you already are. Full moon. Everything is lit. Be
+  seen.
+CATEGORIES:Launch
+END:VEVENT
+BEGIN:VEVENT
+UID:529e65cca2ac7d712340@analog-bag
+DTSTAMP:20261026T022717Z
+DTSTART;VALUE=DATE:20261129
+DTEND;VALUE=DATE:20261130
+SUMMARY:Peak: show what's inside (Spring Breath Retreat)
+TRANSP:TRANSPARENT
+DESCRIPTION:Be everywhere you already are. Full moon. Everything is lit. Be
+  seen.
+CATEGORIES:Launch
+END:VEVENT
+BEGIN:VEVENT
+UID:820d54c5aca0cd623aab@analog-bag
+DTSTAMP:20261026T022717Z
+DTSTART;VALUE=DATE:20261201
+DTEND;VALUE=DATE:20261202
+SUMMARY:Close: say the deadline once\, calmly (Spring Breath Retreat)
+TRANSP:TRANSPARENT
+DESCRIPTION:Calm\, clear\, certain. Last quarter. Release what isn't workin
+ g.
+CATEGORIES:Launch
+END:VEVENT
+BEGIN:VEVENT
+UID:d2815c4eefe7f9e314fc@analog-bag
+DTSTAMP:20261026T022717Z
+DTSTART;VALUE=DATE:20261201
+DTEND;VALUE=DATE:20261202
+SUMMARY:Last quarter
+TRANSP:TRANSPARENT
+DESCRIPTION:Exact time 2026-12-01 06:08 UTC. Last quarter. Release what isn
+ 't working.
+CATEGORIES:Moon
+END:VEVENT
+BEGIN:VEVENT
+UID:da88492449e455c6a8f4@analog-bag
+DTSTAMP:20261026T022717Z
+DTSTART;VALUE=DATE:20261205
+DTEND;VALUE=DATE:20261206
+SUMMARY:Close: close with the one line (Spring Breath Retreat)
+TRANSP:TRANSPARENT
+DESCRIPTION:Calm\, clear\, certain. Last quarter. Release what isn't workin
+ g.
+CATEGORIES:Launch
+END:VEVENT
+BEGIN:VEVENT
+UID:83fbb6fa6e9e29427ee5@analog-bag
+DTSTAMP:20261026T022717Z
+DTSTART;VALUE=DATE:20261209
+DTEND;VALUE=DATE:20261210
+SUMMARY:Integrate: rest and debrief (Spring Breath Retreat)
+TRANSP:TRANSPARENT
+DESCRIPTION:Rest is part of the launch. New moon. Plant it. Say it before i
+ t's perfect.
+CATEGORIES:Launch
+END:VEVENT
+BEGIN:VEVENT
+UID:4405f693a42bf07ef3e5@analog-bag
+DTSTAMP:20261026T022717Z
+DTSTART;VALUE=DATE:20261209
+DTEND;VALUE=DATE:20261210
+SUMMARY:New moon
+TRANSP:TRANSPARENT
+DESCRIPTION:Exact time 2026-12-09 00:51 UTC. New moon. Plant it. Say it bef
+ ore it's perfect.
+CATEGORIES:Moon
+END:VEVENT
+BEGIN:VEVENT
+UID:23736f76cab4da2a4ddf@analog-bag
+DTSTAMP:20261026T022717Z
+DTSTART;VALUE=DATE:20261211
+DTEND;VALUE=DATE:20261212
+SUMMARY:Integrate: welcome the women who said yes (Spring Breath Retreat)
+TRANSP:TRANSPARENT
+DESCRIPTION:Rest is part of the launch. New moon. Plant it. Say it before i
+ t's perfect.
+CATEGORIES:Launch
+END:VEVENT
+END:VCALENDAR
