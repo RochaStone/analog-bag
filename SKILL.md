@@ -117,6 +117,25 @@ When she drops a photo of a filled page:
 4. Tell her what changed in one or two lines: what's newly done, what's new, what's still open.
    Delete `new.md` afterwards.
 
+## Make it hers (style.json)
+
+Every page reads one `style.json`: her palette, fonts, handle and her own lines (`lines.todo` on
+the week page, `lines.stamp` and `lines.scrawl` on card backs and the launch page). The scripts
+look for `--style PATH`, then `./style.json` in her folder, then `~/.rocha-coded/style.json`, then
+the bundled example (`examples/style.rocha-coded.json`, Rocha's own look). Each script prints
+which style it used. The keys are in `STYLE.md`.
+
+If she has no style.json, offer to make one before her first printable:
+1. Ask for 3 to 5 references (screenshots, links, a Pinterest board), a palette if she has one,
+   and the words she says a lot.
+2. Look at the references. Start from `style.example.json`, fill it with colours and Google
+   Fonts that match them, put her own words in `lines`, and her references in `references`.
+3. Save it as `style.json` in her folder, render one sample (the Pocket Week is quickest) and
+   show it to her. Adjust until she says yes.
+
+Never assume her taste is Rocha's. Rocha's file is an example, not a default look to sell her.
+The same file works in every Rocha Coded tool.
+
 ## Rules
 
 - Plain, warm words. No em dashes. Never claim numbers she can't show.

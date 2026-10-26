@@ -20,6 +20,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from core import render  # noqa: E402
+from core import style as S  # noqa: E402
 from core.moon import moon_age, phases_between  # noqa: E402
 from core.style import esc, moon_svg, page  # noqa: E402
 from core.when import nice, parse_date, parse_offset  # noqa: E402
@@ -92,9 +93,11 @@ def sheet(start: date, days: list[dict], hemi: str, fill: dict) -> str:
         f"<div class='move'><span class='n'>{i}</span><span class='box'></span>{written(moves[i - 1] if i <= len(moves) else '')}</div>"
         for i in range(1, 4))
     num = fill.get("number")
+    todo = f"<span class='marker'>{esc(S.line('todo'))}</span>" if S.line("todo") else ""
+    who = S.current().get("handle", "")
     return (f"<section class='week lined grain'>"
             f"<div class='top'><div><div class='kicker tag'>Pocket week</div><h1>THIS<br>WEEK</h1></div>"
-            f"<div class='range'><span class='marker'>TO DO: BUILD YOUR FOUNDER WORLD</span>{esc(nice(start))} to {esc(nice(end))} {end.year}</div></div>"
+            f"<div class='range'>{todo}{esc(nice(start))} to {esc(nice(end))} {end.year}</div></div>"
             f"<div class='moons'>{strip}</div>"
             f"<div class='label tag'>The one thing</div><div class='one'>{one_lines}</div>"
             f"<div class='label tag'>Three moves</div>{move_rows}"
@@ -105,7 +108,7 @@ def sheet(start: date, days: list[dict], hemi: str, fill: dict) -> str:
             f"<div class='label tag' style='margin-top:4mm'>Small wins</div>"
             f"<div class='win'></div><div class='win'></div><div class='win'></div>"
             f"<div class='foot'><span class='tag'><span class='cam'></span>Photograph me when done</span>"
-            f"<span class='marker'>Claude reads it back.</span></div></section>")
+            f"<span class='marker'>Claude reads it back.</span><span class='tag'>{esc(who)}</span></div></section>")
 
 
 def build_html(start: date, off: timedelta, hemi: str = "north", fill: dict | None = None,
@@ -132,8 +135,11 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--number", help="prefill the number to watch")
     ap.add_argument("--let-go", help="prefill the let-go line")
     ap.add_argument("--two-up", action="store_true", help="two A5 copies on one A4 landscape sheet")
+    ap.add_argument("--style", help="a style.json (default: ./style.json, then ~/.rocha-coded/style.json)")
     ap.add_argument("--html-only", action="store_true", help="skip Chrome, no PDF")
     a = ap.parse_args(argv)
+    S.use(a.style)
+    print(f"Style: {S.current().get('name') or 'unnamed'} ({S.source()})")
     if len(a.move) > 3:
         raise SystemExit("Three moves, no more. That's the point.")
     off = parse_offset(a.utc_offset)

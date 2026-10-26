@@ -74,6 +74,11 @@ python3 readback/merge.py tasks.md new.md
 
 <p align="center"><img src="examples/launch.png" width="380" alt="A pink lined A4 page: SACRED LAUNCH CALENDAR, Spring Breath Retreat, a plum moon strip and six stage cards with tick boxes."> <img src="examples/week.png" width="268" alt="An A5 pink lined page: THIS WEEK with a moon for each day, the one thing, three moves, one number to watch and a let go line."></p>
 
+## Make it yours
+Every page reads one `style.json`: your colours, your fonts, your handle and your own words on the to-do line and the card backs.
+Two come bundled: [Rocha's look](examples/style.rocha-coded.json) as the finished example, and a [blank one](style.example.json) to fill in. Or ask Claude to make yours from a few screenshots you love. The keys are in [STYLE.md](STYLE.md).
+The same file works across every Rocha Coded tool, so you make it once.
+
 ## What's inside
 | Path | What it is |
 |---|---|
@@ -83,6 +88,7 @@ python3 readback/merge.py tasks.md new.md
 | `launch/launch.py` | The launch arc, the moon page, the `.md` and the `.ics` |
 | `week/week.py` | The Pocket Week page |
 | `readback/merge.py` | Validates a read-back page and merges it into `tasks.md` |
+| `STYLE.md`, `style.example.json`, `examples/style.rocha-coded.json` | Your look in one file, a blank to fill and Rocha's as the example |
 | `core/` | Moon and season maths (Meeus), the calendar file writer, the printable look, the Chrome renderer |
 | `examples/` | Sample cards, pages, a calendar file and a before and after `tasks.md` |
 | `tests/` | `python3 -m unittest`. See [tests/TESTING.md](tests/TESTING.md) for what is and isn't tested |

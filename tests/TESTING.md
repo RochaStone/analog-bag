@@ -6,7 +6,7 @@ Run from the repo root:
 python3 -m unittest -v
 ```
 
-32 tests, standard library only. One test renders a real PDF and skips itself when no Chrome is found.
+35 tests, standard library only. One test renders a real PDF and skips itself when no Chrome is found.
 
 ## What the tests prove
 - **Moon phases.** All 13 full moons of 2026 land within one day, and in fact within two minutes, of NASA GSFC's
@@ -26,6 +26,10 @@ python3 -m unittest -v
 - **Printables.** The deck builds 40 pages (20 fronts, 20 backs) at tarot size and 10 at mini size, both card
   layouts fit A4 and Letter with margins, the week page escapes what it prints, and the moon drawing mirrors
   for waning moons and the southern sky.
+
+- **Style.** A second `style.json` renders the week page with its own to-do line, hero colour, font
+  and handle; keys it leaves out fall back to the bundled example; the fallback order finds
+  `./style.json`; unsafe colours and font names are refused; both bundled style files share keys.
 
 ## What was checked by eye, not by test
 - Every printable was rendered to PNG with headless Chrome on macOS and looked at: the wordiest cards fit at

@@ -19,6 +19,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from core import ics, render  # noqa: E402
+from core import style as S  # noqa: E402
 from core.moon import moon_age, phases_between, seasons  # noqa: E402
 from core.style import PHASE_AGE, esc, moon_svg, page  # noqa: E402
 from core.when import nice, offset_label, parse_date, parse_offset  # noqa: E402
@@ -178,6 +179,7 @@ h1{font-family:var(--didone);font-weight:900;color:var(--hot);font-size:30pt;lin
 .beat.pen .box{border-color:var(--candy)}
 .foot{margin-top:3mm;display:flex;justify-content:space-between;align-items:center;font-size:8pt}
 .foot .marker{font-size:11pt}
+.foot .handle{font-size:7pt;color:var(--plum);margin-left:2mm}
 """
 
 
@@ -201,14 +203,16 @@ def to_html(p: dict) -> str:
                      f"<div class='line'>{esc(st['line'])}</div><div class='note'>{icon}<span>{esc(st['moon_note'])}</span></div>"
                      f"{beats}</div>")
     open_day = p["stages"][2]["start"]
+    who = S.current().get("handle", "")
+    handle = f" <span class='tag handle'>{esc(who)}</span>" if who else ""
     body = (f"<main class='sheet lined grain'><div class='kicker tag'>Sacred launch calendar &middot; {p['weeks']} weeks"
             f" &middot; {esc(offset_label(p['offset']))}</div><h1>{esc(p['offer'])}</h1>"
             f"<div class='sub'><span>{esc(nice(p['start']))} to {esc(nice(p['end']))} {p['end'].year}</span>"
             f"<span class='scrawl'>doors open {esc(nice(open_day))}!</span></div>"
             f"<div class='strip'>{strip}</div><div class='seasons'>This year: {seas}</div>"
             f"<div class='grid'>{''.join(cards)}</div>"
-            f"<div class='foot'><span class='tag'>Tick in pen. Photograph me when done.</span>"
-            f"<span class='marker'>Claude reads it back into your tasks.</span></div></main>")
+            f"<div class='foot'><span class='tag'>Tick in pen. Photograph me. Claude reads it back.</span>"
+            f"<span><span class='marker'>{esc(S.line('scrawl'))}</span>{handle}</span></div></main>")
     return page(f"Launch: {p['offer']}", CSS, body)
 
 
@@ -221,8 +225,11 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--utc-offset", help="your clock, like +08:00 or -5 (default: this computer)")
     ap.add_argument("--hemisphere", choices=("north", "south"), default="north")
     ap.add_argument("--align", action="store_true", help="move the start to the nearest new moon")
+    ap.add_argument("--style", help="a style.json (default: ./style.json, then ~/.rocha-coded/style.json)")
     ap.add_argument("--html-only", action="store_true", help="skip Chrome, no PDF")
     a = ap.parse_args(argv)
+    S.use(a.style)
+    print(f"Style: {S.current().get('name') or 'unnamed'} ({S.source()})")
     off = parse_offset(a.utc_offset)
     start = parse_date(a.date) if a.date else (datetime.now(timezone.utc) + off).date()
     if a.align:

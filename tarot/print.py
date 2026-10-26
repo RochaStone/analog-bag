@@ -20,6 +20,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "tarot"))
 
 from core import render  # noqa: E402
+from core import style as S  # noqa: E402
 from core.style import esc, moon_svg, page  # noqa: E402
 from glyphs import glyph_svg  # noqa: E402
 from pull import load_deck  # noqa: E402
@@ -89,7 +90,7 @@ def front(card: dict, size: str, x: float, y: float) -> str:
     example = "" if size == "mini" else f"<div class='example'>{esc(card['example'])}</div>"
     return (f"<div class='card' style='left:{x}mm;top:{y}mm'><div class='frame'></div><div class='inner'>"
             f"<div class='top tag'><span>{esc(left)}</span><span>{esc(right)}</span></div>"
-            f"<div class='glyph'>{glyph_svg(glyph, round(30 * s, 1))}</div>"
+            f"<div class='glyph'>{glyph_svg(glyph, round(30 * s, 1), S.color('gold'))}</div>"
             f"<div class='name'>{esc(card['name'])}</div>{title}<div class='rule'></div>"
             f"<div class='structure'>{slotted(card['structure'])}</div>{example}"
             f"<div class='stars'>&#10022; &#10022; &#10022;</div><div class='when'><span class='tag'>Pull it when</span>{esc(card['when_to_pull'])}</div>"
@@ -98,11 +99,14 @@ def front(card: dict, size: str, x: float, y: float) -> str:
 
 def back(size: str, x: float, y: float) -> str:
     s = SIZES[size][4]
+    st = S.current()
+    stamp = (f"<div class='lore'>{esc(S.line('stamp'))}</div>" if S.line("stamp") else "") + (
+        f"<div class='under'>{esc(S.line('scrawl'))}</div>" if S.line("scrawl") else "")
+    handle = f" &middot; {esc(st['handle'])}" if st.get("handle") else ""
     moons = "".join(moon_svg(a, round(6 * s, 1)) for a in (0.12, 0.25, 0.5, 0.75, 0.88))
     return (f"<div class='card back' style='left:{x}mm;top:{y}mm'><div class='frame'></div><div class='inner'>"
-            f"<div class='moons'>{moons}</div>{glyph_svg('eye', round(30 * s, 1))}"
-            f"<div class='lore'>LORE</div><div class='under'>thriving in transformational times.</div>"
-            f"<div class='sub tag'>Hook Tarot</div>"
+            f"<div class='moons'>{moons}</div>{glyph_svg('eye', round(30 * s, 1), S.color('gold'))}"
+            f"{stamp}<div class='sub tag'>Hook Tarot{handle}</div>"
             f"<div class='moons'>{moons}</div></div></div>")
 
 
@@ -175,8 +179,11 @@ def main(argv: list[str] | None = None) -> int:
                     help="interleave for double-sided, end for one back page, none to skip")
     ap.add_argument("--only", help="comma-separated card names to print instead of the whole deck")
     ap.add_argument("--strip", help="write a PNG sample strip of the --only cards to this path")
+    ap.add_argument("--style", help="a style.json (default: ./style.json, then ~/.rocha-coded/style.json)")
     ap.add_argument("--html-only", action="store_true", help="skip Chrome, write HTML only")
     a = ap.parse_args(argv)
+    S.use(a.style)
+    print(f"Style: {S.current().get('name') or 'unnamed'} ({S.source()})")
     deck = load_deck()
     cards = pick(deck, a.only) if a.only else deck["cards"]
     out = Path(a.out)
