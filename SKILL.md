@@ -74,6 +74,7 @@ python3 launch/launch.py --offer "<offer name>" --date YYYY-MM-DD --weeks 6 --ou
   default is this computer's clock, which inside Cowork may be UTC.
 - `--hemisphere south` flips the season names and draws the moon as she sees it.
 - `--align` moves the start to the nearest new moon. The script prints a tip when that's close.
+- `--motif analog|cyberpunk|y2k-blog` picks the look (see Looks below).
 
 It writes `launch.html` (one printable page), `launch.pdf`, `launch.md` and `launch.ics`. The six
 stages are seed, build, open, peak, close and integrate. Each starts on a moon phase when one is
@@ -92,7 +93,8 @@ python3 week/week.py --out <folder> --two-up        # two copies on one A4 or Le
 
 Ask whether she wants it blank to fill in pen (the default) or with her one thing written in.
 Optional prefill, only when she asks: `--one-thing "..."`, `--move "..."` (up to three),
-`--number "..."`, `--let-go "..."`. Also `--start YYYY-MM-DD`, `--utc-offset`, `--hemisphere`.
+`--number "..."`, `--let-go "..."`. Also `--start YYYY-MM-DD`, `--utc-offset`, `--hemisphere`,
+`--motif analog|cyberpunk|y2k-blog`.
 
 ## 4. Readback ("read my page", a photo of a filled page)
 
@@ -129,6 +131,20 @@ When she drops a photo of a filled page:
    the format is clean. `--dry-run` shows the result first. `--check FILE` only validates.
 4. Tell her what changed in one or two lines: what's newly done, what's new, what's still open.
    Delete `new.md` afterwards. Then offer the next step: a fresh pocket week for the week ahead.
+
+## Looks (motifs)
+
+The launch page and the pocket week render in three looks from the same data:
+- **analog**: pink lined paper in pen and marker.
+- **cyberpunk**: a plum launch console with pixel headings, block progress for the six stages and a
+  keypad of the week's days.
+- **y2k-blog**: a cream 2003 blog window (`launch.exe`, `thisweek.exe`) with a sidebar where the moon
+  is her mood, a guestbook and a hit counter.
+
+Her style.json `motif` sets the default; `--motif` overrides it for one page. If she hasn't picked
+one, ask once which look she'd like and show her the three in `examples/` (`week.png`,
+`week-cyberpunk.png`, `week-y2k-blog.png`). The tarot stays plum and gold in every look; with
+`tarot/print.py --motif cyberpunk` the card backs carry a pixel stamp.
 
 ## Make it hers (style.json)
 

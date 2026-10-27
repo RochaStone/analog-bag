@@ -36,7 +36,7 @@ Start from `style.example.json`. If you leave a colour or a font blank, the exam
 | `fonts.scrawl` | Handwriting | the to-do line, scrawls, card-back stamp |
 | `fonts.script` | A signature script | not yet |
 | `fonts.mono` | Typewriter or mono | dates on the launch page |
-| `motif` | `guest-check`, `front-page`, `magazine-scrawl`, `pink-paper`, `sticker-collage`, `rotary`, `leopard`, `retro-tv` or `neutral` | not yet |
+| `motif` | Your look: `analog`, `cyberpunk` or `y2k-blog`. Older names still work and map to the nearest look | the launch page, the pocket week, the card-back stamp |
 | `lines.todo` | Your to-do line | top of the week page |
 | `lines.stamp` | One big word | card backs |
 | `lines.scrawl` | Your handwritten line | card backs, launch page footer |

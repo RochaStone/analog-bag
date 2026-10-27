@@ -21,8 +21,12 @@ sys.path.insert(0, str(ROOT))
 from core import ics, render  # noqa: E402
 from core import style as S  # noqa: E402
 from core.moon import moon_age, phases_between, seasons  # noqa: E402
-from core.style import PHASE_AGE, esc, moon_svg, page  # noqa: E402
+from core.style import PHASE_AGE  # noqa: E402
 from core.when import nice, offset_label, parse_date, parse_offset  # noqa: E402
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from launch_html import to_html  # noqa: E402
+from core import motif as M  # noqa: E402
 
 ARC = (
     ("seed", "Seed", "Plant the idea before you sell it.",
@@ -152,70 +156,6 @@ def to_md(p: dict) -> str:
     return "\n".join(out) + "\n"
 
 
-CSS = """
-@page{size:A4;margin:0}
-body{background:var(--cream)}
-.sheet{width:210mm;height:297mm;padding:11mm 11mm 9mm 20mm;display:flex;flex-direction:column;overflow:hidden}
-.kicker{color:var(--wine);font-size:8.5pt}
-h1{font-family:var(--didone);font-weight:900;color:var(--wine);font-size:30pt;line-height:1;margin:1.5mm 0 1mm;letter-spacing:-.01em}
-.sub{display:flex;justify-content:space-between;align-items:baseline;font-size:9.5pt}
-.scrawl{font-family:var(--marker);color:var(--magenta);font-size:13pt;transform:rotate(-2deg);display:inline-block}
-.strip{display:flex;justify-content:space-around;gap:2.4mm;flex-wrap:wrap;margin:4mm 0 2mm;padding:2.5mm 3mm;background:var(--plum);border-radius:2mm}
-.ph{display:flex;flex-direction:column;align-items:center;color:var(--cream);font-size:6.6pt;min-width:12mm}
-.ph .tag{color:var(--gold);font-size:5.8pt;margin-top:.8mm;letter-spacing:.08em}
-.seasons{font-size:7.6pt;margin:1mm 0 3mm;color:#3a2a33}
-.seasons b{color:var(--wine)}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:4mm;flex:1}
-.stage{background:rgba(255,255,255,.78);border:.35mm solid var(--candy);border-radius:2mm;padding:3mm 3.5mm;position:relative;
-  box-shadow:.6mm 1mm 2mm rgba(30,6,20,.16)}
-.stage .num{position:absolute;right:3mm;top:2mm;font-family:var(--didone);font-size:20pt;color:var(--candy);font-weight:900}
-.stage .tag{color:var(--wine);font-size:9pt}
-.stage .dates{font-size:8pt;color:#3a2a33}
-.stage .line{font-family:var(--didone);font-style:italic;font-size:10pt;margin:1.2mm 0 .6mm}
-.stage .note{font-size:7.4pt;color:var(--plum);display:flex;gap:1.5mm;align-items:center}
-.beat{display:flex;gap:2mm;align-items:center;font-size:9.4pt;padding:1.6mm 0;border-bottom:.3mm solid var(--candy)}
-.beat .d{font-family:var(--mono);font-size:7.4pt;color:var(--magenta);min-width:19mm;white-space:nowrap}
-.beat.pen{height:7.6mm}
-.beat.pen .box{border-color:var(--candy)}
-.foot{margin-top:3mm;display:flex;justify-content:space-between;align-items:center;font-size:8pt}
-.foot .marker{font-size:11pt}
-.foot .handle{font-size:7pt;color:var(--plum);margin-left:2mm}
-"""
-
-
-def to_html(p: dict) -> str:
-    hemi = p["hemisphere"]
-    strip = "".join(
-        f"<div class='ph'>{moon_svg(PHASE_AGE[ph['name']], 8, hemi)}"
-        f"<span class='tag'>{esc(ph['name'])}</span><span>{esc(nice(ph['day']))}</span></div>"
-        for ph in p["phases"])
-    seas = " &middot; ".join(
-        (f"<b>{esc(s['feel'])} {esc(nice(s['day']))}</b>" if s["in_window"]
-         else f"{esc(s['feel'])} {esc(nice(s['day']))}") for s in p["seasons"] if s["day"].year == p["start"].year)
-    cards = []
-    for i, st in enumerate(p["stages"], 1):
-        icon = moon_svg(st["age"], 4.2, hemi)
-        beats = "".join(f"<div class='beat'><span class='box'></span><span class='d'>{esc(nice(b['day']))}</span>"
-                        f"<span>{esc(b['text'])}</span></div>" for b in st["beats"])
-        beats += "<div class='beat pen'><span class='box'></span><span class='d'></span><span></span></div>" * (5 - len(st["beats"]))
-        cards.append(f"<div class='stage'><div class='num'>{i:02d}</div><div class='tag'>{esc(st['label'])}</div>"
-                     f"<div class='dates'>{esc(nice(st['start']))} to {esc(nice(st['end']))}</div>"
-                     f"<div class='line'>{esc(st['line'])}</div><div class='note'>{icon}<span>{esc(st['moon_note'])}</span></div>"
-                     f"{beats}</div>")
-    open_day = p["stages"][2]["start"]
-    who = S.current().get("handle", "")
-    handle = f" <span class='tag handle'>{esc(who)}</span>" if who else ""
-    body = (f"<main class='sheet lined grain'><div class='kicker tag'>Sacred launch calendar &middot; {p['weeks']} weeks"
-            f" &middot; {esc(offset_label(p['offset']))}</div><h1>{esc(p['offer'])}</h1>"
-            f"<div class='sub'><span>{esc(nice(p['start']))} to {esc(nice(p['end']))} {p['end'].year}</span>"
-            f"<span class='scrawl'>doors open {esc(nice(open_day))}!</span></div>"
-            f"<div class='strip'>{strip}</div><div class='seasons'>This year: {seas}</div>"
-            f"<div class='grid'>{''.join(cards)}</div>"
-            f"<div class='foot'><span class='tag'>Tick in pen. Photograph me. Claude reads it back.</span>"
-            f"<span><span class='marker'>{esc(S.line('scrawl'))}</span>{handle}</span></div></main>")
-    return page(f"Launch: {p['offer']}", CSS, body)
-
-
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Lay a launch arc on the moon.")
     ap.add_argument("--offer", required=True, help="the name of what you're launching")
@@ -226,6 +166,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--hemisphere", choices=("north", "south"), default="north")
     ap.add_argument("--align", action="store_true", help="move the start to the nearest new moon")
     ap.add_argument("--style", help="a style.json (default: ./style.json, then ~/.rocha-coded/style.json)")
+    ap.add_argument("--motif", choices=M.CHOICES, help="analog, cyberpunk or y2k-blog (default: your style.json)")
     ap.add_argument("--html-only", action="store_true", help="skip Chrome, no PDF")
     a = ap.parse_args(argv)
     S.use(a.style)
@@ -242,9 +183,10 @@ def main(argv: list[str] | None = None) -> int:
     (out / "launch.ics").write_text(to_ics(p), encoding="utf-8", newline="")
     (out / "launch.md").write_text(to_md(p), encoding="utf-8")
     html_path = out / "launch.html"
-    html_path.write_text(to_html(p), encoding="utf-8")
+    motif = M.resolve(a.motif)
+    html_path.write_text(to_html(p, motif), encoding="utf-8")
 
-    print(f"Sacred Launch: {p['offer']}, {nice(p['start'])} to {nice(p['end'])} {p['end'].year}")
+    print(f"Sacred Launch: {p['offer']}, {nice(p['start'])} to {nice(p['end'])} {p['end'].year} ({motif})")
     for st in p["stages"]:
         moon = f" on the {st['anchor']}" if st["anchor"] else ""
         print(f"  {st['label']:<9} {nice(st['start'])}{moon}: " + "; ".join(b["text"] for b in st["beats"]))

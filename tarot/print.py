@@ -20,6 +20,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "tarot"))
 
 from core import render  # noqa: E402
+from core import motif as M  # noqa: E402
 from core import style as S  # noqa: E402
 from core.style import esc, moon_svg, page  # noqa: E402
 from glyphs import glyph_svg  # noqa: E402
@@ -54,6 +55,7 @@ body{background:#fff}
 .back .word{font-family:var(--didone);color:var(--candy);font-size:1.7em;letter-spacing:.12em;text-transform:uppercase}
 .back .moons{display:flex;gap:1.2mm}
 .back .sub{color:var(--gold);font-size:.62em}
+.back .lore.pixel{font-family:var(--pixel);font-size:2.6em;transform:none;letter-spacing:.06em}
 .back .lore{font-family:var(--marker);color:var(--candy);font-size:3.2em;line-height:1;transform:rotate(-4deg)}
 .back .under{font-family:var(--didone);font-style:italic;color:var(--cream);font-size:.8em;margin-top:-1mm}
 .cut{position:absolute;border-color:#9b8a93;border-style:dashed;border-width:0}
@@ -97,10 +99,11 @@ def front(card: dict, size: str, x: float, y: float) -> str:
             f"</div></div>")
 
 
-def back(size: str, x: float, y: float) -> str:
+def back(size: str, x: float, y: float, motif: str = "analog") -> str:
     s = SIZES[size][4]
     st = S.current()
-    stamp = (f"<div class='lore'>{esc(S.line('stamp'))}</div>" if S.line("stamp") else "") + (
+    lore_cls = "lore pixel" if motif == "cyberpunk" else "lore"
+    stamp = (f"<div class='{lore_cls}'>{esc(S.line('stamp'))}</div>" if S.line("stamp") else "") + (
         f"<div class='under'>{esc(S.line('scrawl'))}</div>" if S.line("scrawl") else "")
     handle = f" &middot; {esc(st['handle'])}" if st.get("handle") else ""
     moons = "".join(moon_svg(a, round(6 * s, 1)) for a in (0.12, 0.25, 0.5, 0.75, 0.88))
@@ -127,7 +130,8 @@ def cuts(cols: int, rows: int, cw: float, ch: float, mx: float, my: float, pw: f
     return "".join(out)
 
 
-def build_html(cards: list[dict], size: str = "tarot", paper: str = "a4", backs: str = "interleave") -> str:
+def build_html(cards: list[dict], size: str = "tarot", paper: str = "a4", backs: str = "interleave",
+               motif: str = "analog") -> str:
     cw, ch, cols, rows, s = SIZES[size]
     pw, ph = PAPERS[paper]
     mx, my = (pw - cols * cw) / 2, (ph - rows * ch) / 2
@@ -140,7 +144,7 @@ def build_html(cards: list[dict], size: str = "tarot", paper: str = "a4", backs:
         for i, card in enumerate(chunk):
             r, c = divmod(i, cols)
             f_html.append(front(card, size, mx + c * cw, my + r * ch))
-            b_html.append(back(size, mx + (cols - 1 - c) * cw, my + r * ch))
+            b_html.append(back(size, mx + (cols - 1 - c) * cw, my + r * ch, motif))
         fronts.append(f"<section class='sheet'>{''.join(f_html)}{marks}</section>")
         backs_pages.append(f"<section class='sheet'>{''.join(b_html)}{marks}</section>")
     if backs == "interleave":
@@ -153,9 +157,9 @@ def build_html(cards: list[dict], size: str = "tarot", paper: str = "a4", backs:
     return page("Hook Tarot", vars_css + CSS, "".join(sheets))
 
 
-def build_strip(cards: list[dict], size: str = "tarot") -> str:
+def build_strip(cards: list[dict], size: str = "tarot", motif: str = "analog") -> str:
     cw, ch, _, _, s = SIZES[size]
-    items = [front(c, size, 0, 0) for c in cards] + [back(size, 0, 0)]
+    items = [front(c, size, 0, 0) for c in cards] + [back(size, 0, 0, motif)]
     vars_css = f":root{{--pw:210mm;--ph:297mm;--cw:{cw}mm;--ch:{ch}mm;--s:{s}}}"
     return page("Hook Tarot sample", vars_css + CSS + "body{background:var(--paper)}",
                 f"<div class='strip'>{''.join(items)}</div>")
@@ -180,6 +184,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--only", help="comma-separated card names to print instead of the whole deck")
     ap.add_argument("--strip", help="write a PNG sample strip of the --only cards to this path")
     ap.add_argument("--style", help="a style.json (default: ./style.json, then ~/.rocha-coded/style.json)")
+    ap.add_argument("--motif", choices=M.CHOICES, help="card backs: cyberpunk gives a pixel stamp (fronts stay plum and gold)")
     ap.add_argument("--html-only", action="store_true", help="skip Chrome, write HTML only")
     a = ap.parse_args(argv)
     S.use(a.style)
@@ -191,7 +196,7 @@ def main(argv: list[str] | None = None) -> int:
 
     if a.strip:
         html_path = out / "hook-tarot-strip.html"
-        html_path.write_text(build_strip(cards, a.size), encoding="utf-8")
+        html_path.write_text(build_strip(cards, a.size, M.resolve(a.motif)), encoding="utf-8")
         cw, ch = SIZES[a.size][:2]
         w = int(((cw + 9) * (len(cards) + 1) + 11) * 96 / 25.4)
         h = int((ch + 21) * 96 / 25.4)
@@ -200,7 +205,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     html_path = out / "hook-tarot.html"
-    html_path.write_text(build_html(cards, a.size, a.paper, a.backs), encoding="utf-8")
+    html_path.write_text(build_html(cards, a.size, a.paper, a.backs, M.resolve(a.motif)), encoding="utf-8")
     per = SIZES[a.size][2] * SIZES[a.size][3]
     pages = -(-len(cards) // per)
     print(f"Hook Tarot: {len(cards)} cards, {a.size} size, {per} per {a.paper.upper()} page, "

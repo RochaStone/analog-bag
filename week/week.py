@@ -20,17 +20,83 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from core import render  # noqa: E402
+from core import motif as M  # noqa: E402
 from core import style as S  # noqa: E402
 from core.moon import moon_age, phases_between  # noqa: E402
 from core.style import esc, moon_svg, page  # noqa: E402
 from core.when import nice, parse_date, parse_offset  # noqa: E402
+
+PHASE_WORDS = ("new moon", "waxing crescent", "first quarter", "waxing gibbous",
+               "full moon", "waning gibbous", "last quarter", "waning crescent")
+
+
+def phase_word(age: float) -> str:
+    return PHASE_WORDS[int(((age % 1) * 8) + 0.5) % 8]
+
+CYBER = """
+.week.console .screen{inset:4mm;padding:5mm 5mm 4mm}
+.chead{display:flex;justify-content:space-between;align-items:center;position:relative}
+.console .top{position:relative;margin-top:2mm;align-items:flex-end}
+.console h1.pixel{color:var(--candy);font-size:20pt;line-height:1}
+.console .range{color:var(--cream);font-family:var(--mono);font-size:7.4pt}
+.console .range .todo{color:var(--candy)}
+.keypad{display:grid;grid-template-columns:repeat(7,1fr);gap:1.4mm;margin:3mm 0;position:relative}
+.key{background:var(--wine);border:.3mm solid var(--gold);border-radius:2.4mm 2.4mm 3.4mm 3.4mm;display:flex;flex-direction:column;
+  align-items:center;gap:.4mm;padding:1.2mm 0 1mm;color:var(--cream)}
+.key .pixel{color:var(--gold);font-size:5.6pt}
+.key .dn{font-family:var(--mono);font-size:7pt}
+.key .ph{color:var(--candy);font-size:4.4pt;height:1.8mm;text-transform:uppercase}
+.console .inset{position:relative;flex:1;padding:3mm 4mm;display:flex;flex-direction:column}
+.console .label{font-family:var(--pixel);font-weight:400;font-size:7pt}
+.console .one{min-height:24mm;margin:1mm 0 3mm;padding:2mm 3mm}
+.console .move{height:7.4mm}
+.console .number{margin:1mm 0 3mm}
+.console .cell{height:11mm;font-family:var(--mono)}
+.console .letgo{height:8mm}
+.console .win{height:6.4mm}
+.console .wins{flex:1;min-height:19mm;background:repeating-linear-gradient(180deg,transparent 0,transparent 6.1mm,var(--candy) 6.1mm,var(--candy) 6.4mm)}
+.console .wins .win{display:none}
+.console .foot{position:relative;color:var(--cream);margin-top:2.5mm;padding-top:0}
+.console .foot .tag{color:var(--gold)}
+"""
+
+Y2K = """
+.week.desk{padding:6mm 5mm}
+.win9{flex:1}
+.mainc{flex:1;min-width:0;padding:3mm 4mm;display:flex;flex-direction:column}
+.side{width:31mm;flex:none;font-size:6.6pt;padding:2.4mm}
+.desk .kicker{display:flex;align-items:center;gap:1mm}
+.desk h1{font-size:22pt;line-height:1;margin:.6mm 0 1mm}
+.desk .range{text-align:left;font-size:7.6pt;margin-bottom:2.4mm}
+.desk .range .todo{transform:none;font-size:7.4pt}
+.desk .label{font-family:var(--pixel);font-weight:400;font-size:6.8pt}
+.desk .one{min-height:24mm;margin:1mm 0 3mm;padding:2mm 3mm}
+.desk .move{height:7.4mm}
+.desk .number{grid-template-columns:1.3fr 1fr 1fr;margin:1mm 0 3mm}
+.desk .cell{height:11mm}
+.desk .letgo{height:8mm}
+.desk .win{height:6.4mm}
+.desk .mainc .foot{margin-top:2mm}
+.desk .wins{flex:1;min-height:19mm;background:repeating-linear-gradient(180deg,transparent 0,transparent 6.1mm,var(--candy) 6.1mm,var(--candy) 6.4mm)}
+.desk .wins .win{display:none}
+.desk .foot{font-size:6pt}
+.desk .foot .marker{font-size:8.4pt}
+.mood{display:flex;align-items:center;gap:1.2mm}
+.mrow{display:flex;align-items:center;gap:1mm;padding:.3mm 0}
+.mrow .ph{margin-left:auto;font-size:4.6pt;color:var(--magenta);text-transform:uppercase}
+.side .bottom{margin-top:auto}
+.updated{font-family:var(--mono);font-size:5.8pt;color:var(--plum);margin-top:1mm}
+.counter{font-size:5.4pt}
+"""
 
 CSS = """
 @page{size:var(--pw) var(--ph);margin:0}
 body{background:#fff}
 .paper{display:flex;width:var(--pw);height:var(--ph)}
 .cutline{width:0;border-left:.3mm dashed #b9a3ad}
-.week{width:148mm;height:210mm;padding:9mm 9mm 7mm 19mm;display:flex;flex-direction:column;overflow:hidden;flex:none}
+.week{width:148mm;height:210mm;display:flex;flex-direction:column;overflow:hidden;flex:none}
+.week.lined{padding:9mm 9mm 7mm 19mm}
+@media screen and (max-width:480px){.paper{width:auto;height:auto;flex-direction:column}.week{zoom:.66}}
 .top{display:flex;justify-content:space-between;align-items:flex-end}
 .kicker{color:var(--wine);font-size:7pt}
 h1{font-family:var(--didone);font-weight:900;color:var(--wine);font-size:31pt;line-height:.95;letter-spacing:-.01em}
@@ -79,48 +145,83 @@ def written(text: str | None) -> str:
     return f"<span class='write'>{esc(text)}</span>" if text else ""
 
 
-def sheet(start: date, days: list[dict], hemi: str, fill: dict) -> str:
+def blocks(fill: dict) -> dict:
+    """The shared pieces of the page, the same in every motif."""
+    moves = fill.get("moves") or []
+    return {
+        "one": (f"<div class='line'>{written(fill.get('one_thing'))}</div><div class='line'></div><div class='line'></div>"),
+        "moves": "".join(
+            f"<div class='move'><span class='n'>{i}</span><span class='box'></span>"
+            f"{written(moves[i - 1] if i <= len(moves) else '')}</div>" for i in range(1, 4)),
+        "number": (f"<div class='number'><div class='cell'><span class='tag'>What</span><br>{written(fill.get('number'))}</div>"
+                   f"<div class='cell'><span class='tag'>Monday</span></div><div class='cell'><span class='tag'>Sunday</span></div></div>"),
+        "letgo": f"<div class='letgo'><span class='marker'>let go of:</span>{written(fill.get('let_go'))}</div>",
+        "wins": "<div class='wins'><div class='win'></div><div class='win'></div><div class='win'></div></div>",
+    }
+
+
+def body(b: dict) -> str:
+    return (f"<div class='label tag'>The one thing</div><div class='one'>{b['one']}</div>"
+            f"<div class='label tag'>Three moves</div>{b['moves']}"
+            f"<div class='label tag' style='margin-top:4mm'>One number to watch</div>{b['number']}{b['letgo']}"
+            f"<div class='label tag' style='margin-top:4mm'>Small wins</div>{b['wins']}")
+
+
+def sheet(start: date, days: list[dict], hemi: str, fill: dict, motif: str = "analog") -> str:
     end = start + timedelta(days=6)
+    rng = f"{nice(start)} to {nice(end)} {end.year}"
+    todo = f"<span class='hand todo'>{esc(S.line('todo'))}</span>" if S.line("todo") else ""
+    who = esc(S.current().get("handle", ""))
+    b = blocks(fill)
+    if motif == "cyberpunk":
+        keys = "".join(
+            f"<div class='key'><span class='pixel'>{d['day'].strftime('%a')}</span>{moon_svg(d['age'], 5, hemi)}"
+            f"<span class='dn'>{d['day'].day}</span><span class='ph'>{esc(d['phase'])}</span></div>" for d in days)
+        return (f"<section class='week console'>{M.screws()}<div class='screen'>"
+                f"<div class='chead'>{M.prompt('thisweek --start ' + start.isoformat())}{M.leds()}</div>"
+                f"<div class='top'><h1 class='pixel'>THIS WEEK</h1><div class='range'>{todo}{esc(rng)}</div></div>"
+                f"<div class='keypad'>{keys}</div><div class='inset'>{body(b)}</div>"
+                f"<div class='foot'>{M.prompt('photograph me when done')}<span class='tag'>{who}</span></div></div></section>")
+    if motif == "y2k-blog":
+        today = days[0]
+        rows = "".join(f"<div class='mrow'>{moon_svg(d['age'], 3.6, hemi)}<span>{d['day'].strftime('%a')} {d['day'].day}</span>"
+                       f"<span class='ph'>{esc(d['phase'])}</span></div>" for d in days)
+        side = (f"<aside class='side'><div><h4>mood</h4><div class='mood'>{moon_svg(today['age'], 5, hemi)} "
+                f"{esc(phase_word(today['age']))}</div></div><div><h4>the moon</h4>{rows}</div>"
+                f"<div><h4>guestbook</h4><div class='guest'><div class='ln'></div><div class='ln'></div></div></div>"
+                f"<div class='bottom'>{M.hit_counter()}<div class='updated'>{who}</div></div></aside>")
+        main = (f"<div class='mainc'><div class='kicker tag'>{M.star('2.4mm')} Pocket week</div><h1>THIS WEEK</h1>"
+                f"<div class='range'>{todo}{esc(rng)}</div>{body(b)}"
+                f"<div class='foot'><span class='tag'><span class='cam'></span>Photograph me when done</span>"
+                f"<span class='marker'>Claude reads it back.</span></div></div>")
+        return f"<section class='week desk'>{M.window('thisweek.exe', main + side)}</section>"
     strip = "".join(
         f"<div class='day'><span class='tag'>{d['day'].strftime('%a')}</span>{moon_svg(d['age'], 7, hemi)}"
         f"<span>{d['day'].day} {d['day'].strftime('%b')}</span><span class='ph'>{esc(d['phase'])}</span></div>"
         for d in days)
-    one = fill.get("one_thing")
-    one_lines = (f"<div class='line'>{written(one)}</div><div class='line'></div><div class='line'></div>")
-    moves = fill.get("moves") or []
-    move_rows = "".join(
-        f"<div class='move'><span class='n'>{i}</span><span class='box'></span>{written(moves[i - 1] if i <= len(moves) else '')}</div>"
-        for i in range(1, 4))
-    num = fill.get("number")
-    todo = f"<span class='hand todo'>{esc(S.line('todo'))}</span>" if S.line("todo") else ""
-    who = S.current().get("handle", "")
     return (f"<section class='week lined grain'>"
             f"<div class='top'><div><div class='kicker tag'>Pocket week</div><h1>THIS<br>WEEK</h1></div>"
-            f"<div class='range'>{todo}{esc(nice(start))} to {esc(nice(end))} {end.year}</div></div>"
-            f"<div class='moons'>{strip}</div>"
-            f"<div class='label tag'>The one thing</div><div class='one'>{one_lines}</div>"
-            f"<div class='label tag'>Three moves</div>{move_rows}"
-            f"<div class='label tag' style='margin-top:4mm'>One number to watch</div>"
-            f"<div class='number'><div class='cell'><span class='tag'>What</span><br>{written(num)}</div>"
-            f"<div class='cell'><span class='tag'>Monday</span></div><div class='cell'><span class='tag'>Sunday</span></div></div>"
-            f"<div class='letgo'><span class='marker'>let go of:</span>{written(fill.get('let_go'))}</div>"
-            f"<div class='label tag' style='margin-top:4mm'>Small wins</div>"
-            f"<div class='win'></div><div class='win'></div><div class='win'></div>"
+            f"<div class='range'>{todo}{esc(rng)}</div></div>"
+            f"<div class='moons'>{strip}</div>{body(b)}"
             f"<div class='foot'><span class='tag'><span class='cam'></span>Photograph me when done</span>"
-            f"<span class='marker'>Claude reads it back.</span><span class='tag'>{esc(who)}</span></div></section>")
+            f"<span class='marker'>Claude reads it back.</span><span class='tag'>{who}</span></div></section>")
 
 
 def build_html(start: date, off: timedelta, hemi: str = "north", fill: dict | None = None,
-               two_up: bool = False) -> str:
+               two_up: bool = False, motif: str | None = None) -> str:
+    motif = M.resolve(motif)
     days = week_days(start, off)
-    one = sheet(start, days, hemi, fill or {})
+    one = sheet(start, days, hemi, fill or {}, motif)
     if two_up:
-        body = f"<div class='paper'>{one}<div class='cutline'></div>{one}</div>"
+        html = f"<div class='paper'>{one}<div class='cutline'></div>{one}</div>"
         dims = ":root{--pw:297mm;--ph:210mm}"
     else:
-        body = f"<div class='paper'>{one}</div>"
+        html = f"<div class='paper'>{one}</div>"
         dims = ":root{--pw:148mm;--ph:210mm}"
-    return page(f"This week: {nice(start)}", dims + CSS, body)
+    css = dims + CSS + M.css() + {"analog": "", "cyberpunk": CYBER, "y2k-blog": Y2K}[motif]
+    if motif == "y2k-blog":
+        css += f".desk{{background-image:{M.tiled_bg()}}}"
+    return page(f"This week: {nice(start)}", css, html)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -134,6 +235,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--number", help="prefill the number to watch")
     ap.add_argument("--let-go", help="prefill the let-go line")
     ap.add_argument("--two-up", action="store_true", help="two A5 copies on one A4 landscape sheet")
+    ap.add_argument("--motif", choices=M.CHOICES, help="analog, cyberpunk or y2k-blog (default: your style.json)")
     ap.add_argument("--style", help="a style.json (default: ./style.json, then ~/.rocha-coded/style.json)")
     ap.add_argument("--html-only", action="store_true", help="skip Chrome, no PDF")
     a = ap.parse_args(argv)
@@ -148,7 +250,7 @@ def main(argv: list[str] | None = None) -> int:
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     html_path = out / "week.html"
-    html_path.write_text(build_html(start, off, a.hemisphere, fill, a.two_up), encoding="utf-8")
+    html_path.write_text(build_html(start, off, a.hemisphere, fill, a.two_up, a.motif), encoding="utf-8")
     print(f"Pocket Week: {nice(start)} to {nice(start + timedelta(days=6))}"
           f"{' (two-up on A4)' if a.two_up else ' (A5)'}. HTML: {html_path}")
     if not a.html_only:

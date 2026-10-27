@@ -87,3 +87,22 @@ def fallback_note(html: Path) -> str:
     return (f"No browser to render with, so the printable is HTML: {html}\n"
             "Open it in Chrome, Safari or Edge, then Print > Save as PDF "
             "(margins: none, background graphics: on).")
+
+
+def dump_dom(html: Path, width: int, height: int) -> tuple[bool, str]:
+    """Load a page at a window size and return the DOM after scripts ran (used by tests)."""
+    chrome = find_chrome()
+    if not chrome:
+        return False, "no Chrome or Chromium found"
+    with tempfile.TemporaryDirectory(prefix="analog-bag-chrome-") as profile:
+        cmd = [chrome, "--headless=new", "--disable-gpu", "--no-first-run", f"--user-data-dir={profile}",
+               f"--window-size={width},{height}", "--virtual-time-budget=4000",
+               "--allow-file-access-from-files", "--dump-dom",
+               html.resolve().as_uri()]
+        if platform.system() == "Linux" and hasattr(os, "geteuid") and os.geteuid() == 0:
+            cmd.insert(1, "--no-sandbox")
+        try:
+            res = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+        except (OSError, subprocess.TimeoutExpired) as exc:
+            return False, f"Chrome failed to run: {exc}"
+    return res.returncode == 0, res.stdout

@@ -123,7 +123,10 @@ def line(key: str) -> str:
 
 def fonts_link(style: dict) -> str:
     links = ['<link rel="preconnect" href="https://fonts.googleapis.com">',
-             '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>']
+             '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>',
+             # pixel font for chrome labels in the cyberpunk and y2k-blog motifs
+             '<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700'
+             '&family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">']
     for role, name in style["fonts"].items():
         fam = quote_plus(name)
         links.append(f'<link href="https://fonts.googleapis.com/css2?family={fam}&display=swap" rel="stylesheet">')
@@ -145,7 +148,8 @@ def root_css(style: dict) -> str:
 
     return (":root{" + colours + " --white:#FFFFFF;"
             f" --didone:{stack('masthead')}; --tag:{stack('label')}; --body:{stack('body')};"
-            f" --marker:{stack('scrawl')}; --script:{stack('script')}; --mono:{stack('mono')};}}" + BASE_CSS)
+            f" --marker:{stack('scrawl')}; --script:{stack('script')}; --mono:{stack('mono')};"
+            " --pixel:'Silkscreen','Pixelify Sans','Courier New',monospace;}" + BASE_CSS)
 
 
 BASE_CSS = """

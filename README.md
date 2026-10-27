@@ -9,36 +9,43 @@ Pull three cards for your next post.
 Lay your launch on the real moon.
 Photograph the page when you're done, and Claude reads it back into your tasks.
 
-<p align="center"><img src="docs/img/hero.png" width="760" alt="On a plum desk: the ANALOG BAG wordmark, three plum and gold Hook Tarot cards fanned with a LORE card back behind, a blush A5 page that says THIS WEEK, and the top of a blush launch calendar with its moon strip."></p>
+<p align="center"><img src="docs/img/hero.png" width="800" alt="A cream 2003-style desktop window titled analog-bag.exe on a blush background tiled with gold pixel stars. Inside: three plum and gold Hook Tarot cards fanned, a pink lined THIS WEEK page, and a blog sidebar with about me, mood: full moon, currently reading the hook tarot, a guestbook and a visitor counter."></p>
 
-<p align="center"><sub>Every example is written for Wren, a made-up breathwork teacher. Her numbers are invented to show the shape.</sub></p>
+<p align="center"><img src="docs/img/triptych.png" width="800" alt="The same pocket week three ways: pink lined paper, a plum console with a keypad of the seven days, and a cream thisweek.exe window with a moon sidebar."></p>
+
+<p align="center"><sub>One week, three looks: analog, cyberpunk and y2k-blog. Pick the look, then make the colours and fonts yours. Every example is written for Wren, a made-up breathwork teacher, and her numbers are invented to show the shape.</sub></p>
+
+<p align="center"><img src="docs/img/divider.svg" width="720" alt=""></p>
+
 
 ## Start here
 Five steps, about ten minutes, once. You'll type a few lines into the terminal: the app on your computer where you give it instructions in words. Copy each line exactly, press Enter, and check you see what the step says.
 
-1. **Open the terminal.** On a Mac, press Command and Space, type `Terminal`, press Enter. A small window opens with a blinking cursor. That's it, you're in.
+<img src="docs/img/step-01.svg" width="33" alt="01"> **Open the terminal.** On a Mac, press Command and Space, type `Terminal`, press Enter. A small window opens with a blinking cursor. That's it, you're in.
 
-2. **Check Python is there.** Python is the free language the kit is written in. This line asks for its version:
-   ```sh
-   python3 --version
-   ```
-   You'll see `Python 3.10` or a higher number. If you see something else, the first fix in [If it goes wrong](#if-it-goes-wrong) has you covered.
+<img src="docs/img/step-02.svg" width="33" alt="02"> **Check Python is there.** Python is the free language the kit is written in. This line asks for its version:
+```sh
+python3 --version
+```
+You'll see `Python 3.10` or a higher number. If you see something else, the first fix in [If it goes wrong](#if-it-goes-wrong-everyones-first-time) has you covered.
 
-3. **Copy the kit onto your computer.** To clone means to download a copy that can update itself later. This puts it where Claude Code looks for skills (a skill is a folder of instructions Claude can follow):
-   ```sh
-   git clone https://github.com/RochaStone/analog-bag ~/.claude/skills/analog-bag
-   ```
-   You'll see `Cloning into...` and then your cursor again.
+<img src="docs/img/step-03.svg" width="33" alt="03"> **Copy the kit onto your computer.** To clone means to download a copy that can update itself later. This puts it where Claude Code looks for skills (a skill is a folder of instructions Claude can follow):
+```sh
+git clone https://github.com/RochaStone/analog-bag ~/.claude/skills/analog-bag
+```
+You'll see `Cloning into...` and then your cursor again.
 
-4. **Pull your first three cards.** This checks everything works:
-   ```sh
-   python3 ~/.claude/skills/analog-bag/tarot/pull.py --topic "my next post" --audience "my people"
-   ```
-   You'll see `HOOK TAROT  three-card pull` and three cards with their hook shapes.
+<img src="docs/img/step-04.svg" width="33" alt="04"> **Pull your first three cards.** This checks everything works:
+```sh
+python3 ~/.claude/skills/analog-bag/tarot/pull.py --topic "my next post" --audience "my people"
+```
+You'll see `HOOK TAROT  three-card pull` and three cards with their hook shapes.
 
-5. **Make your first page.** Open Claude Code in the folder where you want your pages kept (Claude Code is Claude working right inside your terminal). Then say: "Make my pocket week." You'll see `week.pdf` appear in that folder, ready to print.
+<img src="docs/img/step-05.svg" width="33" alt="05"> **Make your first page.** Open Claude Code in the folder where you want your pages kept (Claude Code is Claude working right inside your terminal). Then say: "Make my pocket week." You'll see `week.pdf` appear in that folder, ready to print.
 
 Using the Claude desktop app instead? Go to [Claude Cowork](#claude-cowork): you'll upload one zip (a single compressed file holding the whole kit) and then ask for your first page.
+
+<p align="center"><img src="docs/img/divider.svg" width="720" alt=""></p>
 
 ## What you get
 - **Hook Tarot.** 78 hook structures as a real deck. Print it, cut it, keep it in your bag. 22 Major Arcana for the big ideas (The Receipt, The One Woman Show, The Guest Check, Too Busy, The Hotline, The Front Page). Cups for story and feeling. Wands for bold and contrarian. Swords for questions and challenges. Pentacles for numbers, proof and results.
@@ -48,6 +55,8 @@ Using the Claude desktop app instead? Go to [Claude Cowork](#claude-cowork): you
 - **The readback.** Snap a photo of any filled page. Claude reads your handwriting, ticks what's done and merges it into one running `tasks.md`. Nothing ever gets added twice, and nothing you finished gets unticked.
 
 The moon is computed on your computer from the astronomy itself. No app, no account, no internet. It matches NASA's 2026 tables to the minute.
+
+<p align="center"><img src="docs/img/divider.svg" width="720" alt=""></p>
 
 ## Install
 It runs inside Claude. Nothing to host, no account to make, and your pages stay on your computer.
@@ -79,6 +88,8 @@ Cowork (the Claude desktop app) runs tasks in a sandbox: a safe, closed-off spac
 The sandbox may not have Chrome. If it doesn't, you get the pages as web pages. Open them in your own browser
 and print from there. Tell Claude your city so the moon lands on your local date.
 
+<p align="center"><img src="docs/img/divider.svg" width="720" alt=""></p>
+
 ## How to use it
 **Pull three cards.** "Pull three cards for my retreat, for burnt-out founders." You get three hook shapes, filled in for you.
 
@@ -88,6 +99,8 @@ and print from there. Tell Claude your city so the moon lands on your local date
 
 **Plan the week.** "Make my pocket week." Print it on A5, or ask for two-up to get two copies on one A4 sheet.
 
+**Pick a look.** The launch page and the pocket week come in three looks: analog (pink lined paper), cyberpunk (a plum console) and y2k-blog (a 2003 blog window). Say "make it cyberpunk", or set it once in your style file. The tarot stays plum and gold in every look.
+
 **Read it back.** Sunday night, take a photo of the page and drop it in: "Read my page." Claude tells you what's done, what's new and what's still open.
 
 Prefer the terminal? Every piece runs on its own:
@@ -95,14 +108,16 @@ Prefer the terminal? Every piece runs on its own:
 python3 tarot/pull.py --topic "my spring retreat" --audience "burnt-out founders"
 python3 tarot/print.py --out out/
 python3 launch/launch.py --offer "Spring Breath Retreat" --date 2026-11-02 --weeks 6 --out out/ --utc-offset +08:00
-python3 week/week.py --out out/
+python3 week/week.py --out out/ --motif y2k-blog
 python3 readback/merge.py tasks.md new.md
 ```
 
 <p align="center"><img src="examples/launch.png" width="380" alt="A pink lined A4 page: SACRED LAUNCH CALENDAR, Spring Breath Retreat, a plum moon strip and six stage cards with tick boxes."> <img src="examples/week.png" width="268" alt="An A5 pink lined page: THIS WEEK with a moon for each day, the one thing, three moves, one number to watch and a let go line."></p>
 
-## If it goes wrong
-These happen to everyone the first time. Each one has a quick fix.
+<p align="center"><img src="docs/img/divider.svg" width="720" alt=""></p>
+
+## If it goes wrong (everyone's first time)
+<img src="docs/img/heart.svg" width="21" alt=""> These happen to everyone the first time. Each one has a quick fix.
 
 - **"command not found: python3", or a version below 3.10.** Install Python from [python.org/downloads](https://www.python.org/downloads/), close the terminal, open a fresh one and run step 2 again.
 - **"command not found: git", or a box asking to install developer tools.** On a Mac, click Install in that box and wait for it to finish, then run step 3 again. Git is the free tool that does the cloning.
@@ -111,7 +126,7 @@ These happen to everyone the first time. Each one has a quick fix.
 If the moon lands a day off, tell Claude your city. The kit uses your clock to pick the local date.
 
 ## Make it yours
-Every page reads one `style.json`: your colours, your fonts, your handle and your own words on the to-do line and the card backs.
+Every page reads one `style.json`: your colours, your fonts, your handle, your look (analog, cyberpunk or y2k-blog) and your own words on the to-do line and the card backs. The look is the structure, the colours and fonts are the finish, and both are yours to curate.
 Two come bundled: [Rocha's look](examples/style.rocha-coded.json) as the finished example, and a [blank one](style.example.json) to fill in. Or ask Claude to make yours from a few screenshots you love. The keys are in [STYLE.md](STYLE.md).
 The same file works across every Rocha Coded tool, so you make it once.
 
@@ -123,14 +138,20 @@ The same file works across every Rocha Coded tool, so you make it once.
 | `tarot/pull.py`, `tarot/print.py` | The three-card pull and the printable deck |
 | `launch/launch.py` | The launch arc, the moon page, the `.md` and the `.ics` |
 | `week/week.py` | The Pocket Week page |
+| `core/motif.py` | The three looks: analog, cyberpunk and y2k-blog |
 | `readback/merge.py` | Validates a read-back page and merges it into `tasks.md` |
 | `STYLE.md`, `style.example.json`, `examples/style.rocha-coded.json` | Your look in one file, a blank to fill and Rocha's as the example |
 | `core/` | Moon and season maths (Meeus), the calendar file writer, the printable look, the Chrome renderer |
-| `examples/` | Sample cards, pages, a calendar file and a before and after `tasks.md` |
+| `examples/` | Sample cards, pages in every look, a calendar file and a before and after `tasks.md` |
+| `scripts/make-readme-images.py` | Renders every image in this README from the kit itself (listed in [docs/IMAGES.md](docs/IMAGES.md)) |
 | `tests/` | `python3 -m unittest`. See [tests/TESTING.md](tests/TESTING.md) for what is and isn't tested |
+
+<p align="center"><img src="docs/img/divider.svg" width="720" alt=""></p>
 
 ## Licence
 MIT. See [LICENSE](LICENSE). Copyright (c) 2026 Rochelle Livingstone / Thriving Era Studio.
+
+<img src="docs/img/heart.svg" width="21" alt=""> [Sign my guestbook](https://github.com/RochaStone/analog-bag/issues)
 
 ## Made by Rocha
 

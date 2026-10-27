@@ -6,7 +6,7 @@ Run from the repo root:
 python3 -m unittest -v
 ```
 
-36 tests, standard library only. One test renders a real PDF and skips itself when no Chrome is found.
+43 tests, standard library only. One test renders a real PDF and skips itself when no Chrome is found.
 
 ## What the tests prove
 - **Moon phases.** All 13 full moons of 2026 land within one day, and in fact within two minutes, of NASA GSFC's
@@ -31,6 +31,14 @@ python3 -m unittest -v
   and handle. A user's file borrows only missing colours and fonts from the bundled example: her
   lines, name, handle, site, references and notes stay blank, and the week page and card back show
   none of Rocha's words. The fallback order finds `./style.json`; unsafe colours and font names are refused; both bundled style files share keys.
+
+- **Looks (motifs).** The launch page and the pocket week render in analog, cyberpunk and y2k-blog,
+  each with its own signature (the lined sheet, the `rocheverse:~$` prompt and block progress, the
+  `launch.exe` window and hit counter) and none of the others'. Every look carries the same beats and
+  moon dates. Old motif names map to a family, an unknown one is refused, style.json picks the
+  default and `--motif` overrides it. With Chrome present, every look of both pages prints as exactly
+  one PDF page and is no wider than a 390px phone screen (measured in a 390px frame, because headless
+  Chrome will not open a window narrower than 500px).
 
 ## What was checked by eye, not by test
 - Every printable was rendered to PNG with headless Chrome on macOS and looked at: the wordiest cards fit at
