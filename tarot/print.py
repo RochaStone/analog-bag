@@ -61,7 +61,7 @@ body{background:#fff}
 .cut.h{border-top-width:.2mm;height:0}
 .inline{border-color:rgba(246,239,228,.35)}
 .strip{display:flex;gap:9mm;padding:10mm;background:var(--paper);align-items:center;width:max-content}
-.strip .card{position:relative;box-shadow:2mm 3mm 5mm rgba(74,16,51,.35)}
+.strip .card{position:relative;box-shadow:2mm 3mm 5mm rgba(30,6,20,.45)}
 .strip .card:nth-child(odd){transform:rotate(-2deg)}
 .strip .card:nth-child(even){transform:rotate(2deg)}
 """

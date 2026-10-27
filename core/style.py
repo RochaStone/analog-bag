@@ -22,15 +22,17 @@ HEX_RE = re.compile(r"^#[0-9A-Fa-f]{6}$")
 FONT_RE = re.compile(r"^[A-Za-z0-9 ]{1,60}$")
 
 FALLBACK_STACKS = {
-    "masthead": "'Didot','Bodoni 72',Georgia,'Times New Roman',serif",
+    "masthead": "Georgia,'Times New Roman',serif",
     "label": "'Arial Narrow','Helvetica Neue',Arial,sans-serif",
     "body": "Georgia,'Times New Roman',serif",
     "scrawl": "'Marker Felt','Chalkboard SE','Comic Sans MS',cursive",
+    "script": "'Snell Roundhand','Apple Chancery',cursive",
     "mono": "'Courier New',monospace",
 }
-# css variable <- palette key
-PALETTE_VARS = {"hot": "hero", "candy": "accent", "paper": "paper_pink", "cream": "paper",
-                "ink": "ink", "red": "marker", "plum": "plum", "gold": "gold", "blue": "cool"}
+# css variable <- palette key. "hero" is the GROUND colour (v2), not an accent.
+PALETTE_VARS = {"ground": "hero", "wine": "wine", "candy": "accent", "paper": "paper_pink",
+                "cream": "paper", "ink": "ink", "magenta": "marker", "plum": "plum", "gold": "gold",
+                "cool": "cool"}
 
 IDENTITY_KEYS = ("name", "owner", "handle", "site", "notes")
 
@@ -126,7 +128,7 @@ def fonts_link(style: dict) -> str:
         fam = quote_plus(name)
         links.append(f'<link href="https://fonts.googleapis.com/css2?family={fam}&display=swap" rel="stylesheet">')
         if role in ("masthead", "body", "label"):  # extra weights; a 400 reply is harmless
-            links.append(f'<link href="https://fonts.googleapis.com/css2?family={fam}:ital,wght@0,700;1,400'
+            links.append(f'<link href="https://fonts.googleapis.com/css2?family={fam}:ital,wght@0,700;0,800;1,400'
                          f'&display=swap" rel="stylesheet">')
         if role == "masthead":
             links.append(f'<link href="https://fonts.googleapis.com/css2?family={fam}:wght@900'
@@ -136,25 +138,26 @@ def fonts_link(style: dict) -> str:
 
 def root_css(style: dict) -> str:
     pal, f = style["palette"], style["fonts"]
-    colours = " ".join(f"--{var}:{pal[key]};" for var, key in PALETTE_VARS.items())
+    colours = " ".join(f"--{var}:{pal[key]};" for var, key in PALETTE_VARS.items() if key in pal)
 
     def stack(role: str) -> str:
-        return f"'{f[role]}',{FALLBACK_STACKS[role]}"
+        return f"'{f[role]}',{FALLBACK_STACKS[role]}" if f.get(role) else FALLBACK_STACKS[role]
 
     return (":root{" + colours + " --white:#FFFFFF;"
             f" --didone:{stack('masthead')}; --tag:{stack('label')}; --body:{stack('body')};"
-            f" --marker:{stack('scrawl')}; --mono:{stack('mono')};}}" + BASE_CSS)
+            f" --marker:{stack('scrawl')}; --script:{stack('script')}; --mono:{stack('mono')};}}" + BASE_CSS)
 
 
 BASE_CSS = """
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:var(--cream);color:var(--ink);font-family:var(--body);
   -webkit-print-color-adjust:exact;print-color-adjust:exact}
-.tag{font-family:var(--tag);text-transform:uppercase;letter-spacing:.14em;font-weight:700}
+.tag{font-family:var(--tag);text-transform:uppercase;letter-spacing:.12em;font-weight:800}
 .didone{font-family:var(--didone)}
-.marker{font-family:var(--marker);color:var(--red)}
+.marker{font-family:var(--marker);color:var(--magenta)}
+.hand{font-family:var(--marker);color:var(--ink)}
 .lined{background-color:var(--paper);
-  background-image:linear-gradient(90deg,transparent 15mm,color-mix(in srgb,var(--red) 55%,transparent) 15mm,color-mix(in srgb,var(--red) 55%,transparent) 15.4mm,transparent 15.4mm),
+  background-image:linear-gradient(90deg,transparent 15mm,color-mix(in srgb,var(--magenta) 55%,transparent) 15mm,color-mix(in srgb,var(--magenta) 55%,transparent) 15.4mm,transparent 15.4mm),
   repeating-linear-gradient(180deg,transparent 0,transparent 6.6mm,var(--candy) 6.6mm,var(--candy) 7mm);}
 .grain{position:relative}
 .grain::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.22;mix-blend-mode:multiply;

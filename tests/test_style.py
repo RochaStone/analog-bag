@@ -29,7 +29,7 @@ class StyleTests(unittest.TestCase):
         S.use(str(S.BUNDLED))
         rocha = self.week_html()
         self.assertIn("TO DO: BUILD YOUR FOUNDER WORLD", rocha)
-        self.assertIn("--hot:#FF2D8A", rocha)
+        self.assertIn("--ground:#50163C", rocha)
         with tempfile.TemporaryDirectory() as d:
             path = Path(d, "style.json")
             path.write_text(json.dumps(SECOND))
@@ -37,11 +37,11 @@ class StyleTests(unittest.TestCase):
             theirs = self.week_html()
         self.assertIn("TO DO: SWIM BEFORE EMAIL", theirs)
         self.assertNotIn("BUILD YOUR FOUNDER WORLD", theirs)
-        self.assertIn("--hot:#1F6F8B", theirs)
-        self.assertNotIn("#FF2D8A", theirs)
+        self.assertIn("--ground:#1F6F8B", theirs)
+        self.assertNotIn("--ground:#50163C", theirs)
         self.assertIn("'Cormorant Garamond'", theirs)
         self.assertIn("@seasaltstudio", theirs)
-        self.assertIn("--plum:#4A1033", theirs)  # keys left out fall back to the example
+        self.assertIn("--plum:#50163C", theirs)  # keys left out fall back to the example
 
     def test_fallback_order_and_bad_values(self):
         with tempfile.TemporaryDirectory() as d:
@@ -56,8 +56,8 @@ class StyleTests(unittest.TestCase):
                 st = S.use()
             finally:
                 os.chdir(old)
-        self.assertEqual(st["palette"]["hero"], "#FF2D8A")  # unsafe colour refused
-        self.assertEqual(st["fonts"]["body"], "Newsreader")  # unsafe font name refused
+        self.assertEqual(st["palette"]["hero"], "#50163C")  # unsafe colour refused
+        self.assertEqual(st["fonts"]["body"], "Fraunces")  # unsafe font name refused
         self.assertEqual(st["lines"]["todo"], "")  # her words never fall back
 
     def test_user_style_never_inherits_her_words(self):
@@ -72,7 +72,7 @@ class StyleTests(unittest.TestCase):
             st = S.use(str(path))
             week = self.week_html()
             card_back = tp.back("tarot", 0, 0)
-        self.assertEqual(st["palette"]["plum"], "#4A1033")    # palette may fall back
+        self.assertEqual(st["palette"]["plum"], "#50163C")    # palette may fall back
         self.assertEqual(st["fonts"]["scrawl"], "Permanent Marker")  # fonts may fall back
         self.assertTrue(all(v == "" for v in st["lines"].values()))
         for k in ("name", "owner", "handle", "site", "notes"):

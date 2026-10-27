@@ -9,7 +9,7 @@ Pull three cards for your next post.
 Lay your launch on the real moon.
 Photograph the page when you're done, and Claude reads it back into your tasks.
 
-<p align="center"><img src="docs/img/hero.png" width="760" alt="Three printables on a hot pink desk: a pink lined launch calendar with a plum moon strip, four plum and gold Hook Tarot cards, and an A5 page that says THIS WEEK."></p>
+<p align="center"><img src="docs/img/hero.png" width="760" alt="On a plum desk: the ANALOG BAG wordmark, three plum and gold Hook Tarot cards fanned with a LORE card back behind, a blush A5 page that says THIS WEEK, and the top of a blush launch calendar with its moon strip."></p>
 
 <p align="center"><sub>Every example is written for Wren, a made-up breathwork teacher. Her numbers are invented to show the shape.</sub></p>
 

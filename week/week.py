@@ -32,22 +32,21 @@ body{background:#fff}
 .cutline{width:0;border-left:.3mm dashed #b9a3ad}
 .week{width:148mm;height:210mm;padding:9mm 9mm 7mm 19mm;display:flex;flex-direction:column;overflow:hidden;flex:none}
 .top{display:flex;justify-content:space-between;align-items:flex-end}
-.kicker{color:var(--hot);font-size:7pt}
-h1{font-family:var(--didone);font-weight:900;color:var(--hot);font-size:31pt;line-height:.95;letter-spacing:-.01em}
+.kicker{color:var(--wine);font-size:7pt}
+h1{font-family:var(--didone);font-weight:900;color:var(--wine);font-size:31pt;line-height:.95;letter-spacing:-.01em}
 .range{font-size:8.6pt;text-align:right}
-.range .marker{font-size:8.4pt;display:block;white-space:nowrap;transform:rotate(-3deg);margin-bottom:1mm}
+.range .todo{font-size:8.4pt;display:block;white-space:nowrap;transform:rotate(-3deg);margin-bottom:1mm}
 .moons{display:grid;grid-template-columns:repeat(7,1fr);gap:1mm;margin:3.5mm 0 3mm;padding:2mm 1.5mm;background:var(--plum);border-radius:1.6mm}
 .day{display:flex;flex-direction:column;align-items:center;color:var(--cream);font-size:6.4pt;gap:.6mm}
 .day .tag{color:var(--gold);font-size:5.6pt}
 .day .ph{color:var(--candy);font-size:5pt;height:2.2mm;text-transform:uppercase;letter-spacing:.06em}
-.label{color:var(--hot);font-size:8pt;margin-bottom:1mm}
+.label{color:var(--wine);font-size:8pt;margin-bottom:1mm}
 .one{position:relative;background:#fff;border:.35mm solid var(--candy);border-radius:1.6mm;padding:4mm 4mm 3mm;min-height:31mm;
-  box-shadow:.8mm 1.2mm 0 rgba(255,45,138,.2);margin:2mm 0 4mm}
-.one::before{content:"";position:absolute;top:-2.6mm;left:50%;width:22mm;height:5mm;margin-left:-11mm;background:rgba(255,179,209,.85);transform:rotate(-3deg)}
+  box-shadow:.6mm 1mm 2mm rgba(30,6,20,.18);margin:2mm 0 4mm}
 .one .line{border-bottom:.3mm solid var(--candy);height:7.2mm}
 .write{font-family:var(--marker);color:var(--ink);font-size:12pt;line-height:7.2mm}
 .move{display:flex;align-items:center;gap:2.4mm;border-bottom:.3mm solid var(--candy);height:8.2mm}
-.move .n{font-family:var(--didone);font-weight:900;color:var(--hot);font-size:11pt;width:5mm;flex:none;text-align:left;line-height:1}
+.move .n{font-family:var(--didone);font-weight:900;color:var(--wine);font-size:11pt;width:5mm;flex:none;text-align:left;line-height:1}
 .number{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:2mm;margin:1mm 0 4mm}
 .cell{background:rgba(255,255,255,.75);border:.3mm solid var(--candy);border-radius:1.2mm;padding:1.2mm 2mm;height:13mm}
 .cell .tag{font-size:5.8pt;color:var(--plum)}
@@ -93,7 +92,7 @@ def sheet(start: date, days: list[dict], hemi: str, fill: dict) -> str:
         f"<div class='move'><span class='n'>{i}</span><span class='box'></span>{written(moves[i - 1] if i <= len(moves) else '')}</div>"
         for i in range(1, 4))
     num = fill.get("number")
-    todo = f"<span class='marker'>{esc(S.line('todo'))}</span>" if S.line("todo") else ""
+    todo = f"<span class='hand todo'>{esc(S.line('todo'))}</span>" if S.line("todo") else ""
     who = S.current().get("handle", "")
     return (f"<section class='week lined grain'>"
             f"<div class='top'><div><div class='kicker tag'>Pocket week</div><h1>THIS<br>WEEK</h1></div>"

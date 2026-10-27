@@ -81,7 +81,7 @@ GLYPHS = {
 }
 
 
-def glyph_svg(name: str, size_mm: float, color: str = "#D4A64A", width: float = 2.2) -> str:
+def glyph_svg(name: str, size_mm: float, color: str = "#E9B949", width: float = 2.2) -> str:
     inner = GLYPHS.get(name, GLYPHS["star"])
     return (f"<svg viewBox='0 0 100 100' width='{size_mm}mm' height='{size_mm}mm' aria-hidden='true'>"
             f"<g fill='none' stroke='{color}' stroke-width='{width}' stroke-linejoin='round' "

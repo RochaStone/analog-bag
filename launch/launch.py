@@ -156,25 +156,25 @@ CSS = """
 @page{size:A4;margin:0}
 body{background:var(--cream)}
 .sheet{width:210mm;height:297mm;padding:11mm 11mm 9mm 20mm;display:flex;flex-direction:column;overflow:hidden}
-.kicker{color:var(--hot);font-size:8.5pt}
-h1{font-family:var(--didone);font-weight:900;color:var(--hot);font-size:30pt;line-height:1;margin:1.5mm 0 1mm;letter-spacing:-.01em}
+.kicker{color:var(--wine);font-size:8.5pt}
+h1{font-family:var(--didone);font-weight:900;color:var(--wine);font-size:30pt;line-height:1;margin:1.5mm 0 1mm;letter-spacing:-.01em}
 .sub{display:flex;justify-content:space-between;align-items:baseline;font-size:9.5pt}
-.scrawl{font-family:var(--marker);color:var(--red);font-size:13pt;transform:rotate(-2deg);display:inline-block}
+.scrawl{font-family:var(--marker);color:var(--magenta);font-size:13pt;transform:rotate(-2deg);display:inline-block}
 .strip{display:flex;justify-content:space-around;gap:2.4mm;flex-wrap:wrap;margin:4mm 0 2mm;padding:2.5mm 3mm;background:var(--plum);border-radius:2mm}
 .ph{display:flex;flex-direction:column;align-items:center;color:var(--cream);font-size:6.6pt;min-width:12mm}
 .ph .tag{color:var(--gold);font-size:5.8pt;margin-top:.8mm;letter-spacing:.08em}
 .seasons{font-size:7.6pt;margin:1mm 0 3mm;color:#3a2a33}
-.seasons b{color:var(--hot)}
+.seasons b{color:var(--wine)}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:4mm;flex:1}
 .stage{background:rgba(255,255,255,.78);border:.35mm solid var(--candy);border-radius:2mm;padding:3mm 3.5mm;position:relative;
-  box-shadow:.8mm 1.2mm 0 rgba(255,45,138,.18)}
+  box-shadow:.6mm 1mm 2mm rgba(30,6,20,.16)}
 .stage .num{position:absolute;right:3mm;top:2mm;font-family:var(--didone);font-size:20pt;color:var(--candy);font-weight:900}
-.stage .tag{color:var(--hot);font-size:9pt}
+.stage .tag{color:var(--wine);font-size:9pt}
 .stage .dates{font-size:8pt;color:#3a2a33}
 .stage .line{font-family:var(--didone);font-style:italic;font-size:10pt;margin:1.2mm 0 .6mm}
 .stage .note{font-size:7.4pt;color:var(--plum);display:flex;gap:1.5mm;align-items:center}
 .beat{display:flex;gap:2mm;align-items:center;font-size:9.4pt;padding:1.6mm 0;border-bottom:.3mm solid var(--candy)}
-.beat .d{font-family:var(--mono);font-size:7.4pt;color:var(--red);min-width:19mm;white-space:nowrap}
+.beat .d{font-family:var(--mono);font-size:7.4pt;color:var(--magenta);min-width:19mm;white-space:nowrap}
 .beat.pen{height:7.6mm}
 .beat.pen .box{border-color:var(--candy)}
 .foot{margin-top:3mm;display:flex;justify-content:space-between;align-items:center;font-size:8pt}

@@ -20,20 +20,22 @@ Start from `style.example.json`. If you leave a colour or a font blank, the exam
 | `owner` | Your name | not yet |
 | `handle` | Your Instagram or social handle | card backs, launch page, week page |
 | `site` | Your website | not yet |
-| `palette.hero` | Your loudest colour | mastheads, labels |
-| `palette.accent` | The soft version of it | page lines, card names |
+| `palette.hero` | Your ground: the deep colour everything sits on | the README hero image |
+| `palette.accent` | Your one accent | page lines, card names, the card-back stamp |
 | `palette.paper` | Plain paper | page backgrounds |
 | `palette.paper_pink` | Tinted paper | lined paper |
 | `palette.ink` | Text | text, tick boxes |
-| `palette.marker` | Your pen colour | scrawls, the margin line |
+| `palette.marker` | Your pen colour on paper | scrawls, the margin line |
 | `palette.plum` | A deep dark | card fronts and backs, moon strips |
+| `palette.wine` | A second deep colour, for headings on paper | page headings, labels, THIS WEEK |
 | `palette.gold` | A metallic or bright line colour | card art, moons |
 | `palette.cool` | A rare cool accent | not yet |
 | `fonts.masthead` | Big headlines | card names, THIS WEEK, the offer name |
 | `fonts.label` | Small caps labels | tags |
 | `fonts.body` | Reading text | card text, beats |
-| `fonts.scrawl` | Handwriting | the to-do line, card-back stamp |
-| `fonts.mono` | Typewriter | dates on the launch page |
+| `fonts.scrawl` | Handwriting | the to-do line, scrawls, card-back stamp |
+| `fonts.script` | A signature script | not yet |
+| `fonts.mono` | Typewriter or mono | dates on the launch page |
 | `motif` | `guest-check`, `front-page`, `magazine-scrawl`, `pink-paper`, `sticker-collage`, `rotary`, `leopard`, `retro-tv` or `neutral` | not yet |
 | `lines.todo` | Your to-do line | top of the week page |
 | `lines.stamp` | One big word | card backs |
