@@ -13,6 +13,33 @@ Photograph the page when you're done, and Claude reads it back into your tasks.
 
 <p align="center"><sub>Every example is written for Wren, a made-up breathwork teacher. Her numbers are invented to show the shape.</sub></p>
 
+## Start here
+Five steps, about ten minutes, once. You'll type a few lines into the terminal: the app on your computer where you give it instructions in words. Copy each line exactly, press Enter, and check you see what the step says.
+
+1. **Open the terminal.** On a Mac, press Command and Space, type `Terminal`, press Enter. A small window opens with a blinking cursor. That's it, you're in.
+
+2. **Check Python is there.** Python is the free language the kit is written in. This line asks for its version:
+   ```sh
+   python3 --version
+   ```
+   You'll see `Python 3.10` or a higher number. If you see something else, the first fix in [If it goes wrong](#if-it-goes-wrong) has you covered.
+
+3. **Copy the kit onto your computer.** To clone means to download a copy that can update itself later. This puts it where Claude Code looks for skills (a skill is a folder of instructions Claude can follow):
+   ```sh
+   git clone https://github.com/RochaStone/analog-bag ~/.claude/skills/analog-bag
+   ```
+   You'll see `Cloning into...` and then your cursor again.
+
+4. **Pull your first three cards.** This checks everything works:
+   ```sh
+   python3 ~/.claude/skills/analog-bag/tarot/pull.py --topic "my next post" --audience "my people"
+   ```
+   You'll see `HOOK TAROT  three-card pull` and three cards with their hook shapes.
+
+5. **Make your first page.** Open Claude Code in the folder where you want your pages kept (Claude Code is Claude working right inside your terminal). Then say: "Make my pocket week." You'll see `week.pdf` appear in that folder, ready to print.
+
+Using the Claude desktop app instead? Go to [Claude Cowork](#claude-cowork): you'll upload one zip (a single compressed file holding the whole kit) and then ask for your first page.
+
 ## What you get
 - **Hook Tarot.** 78 hook structures as a real deck. Print it, cut it, keep it in your bag. 22 Major Arcana for the big ideas (The Receipt, The One Woman Show, The Guest Check, Too Busy, The Hotline, The Front Page). Cups for story and feeling. Wands for bold and contrarian. Swords for questions and challenges. Pentacles for numbers, proof and results.
 - **A three-card pull.** What they believe, what you'll say, what they'll do. Claude fills every blank with your topic, in your words.
@@ -30,8 +57,8 @@ It runs inside Claude. Nothing to host, no account to make, and your pages stay 
 | [Claude Code](#claude-code) (recommended) | clone into `~/.claude/skills` | ask "pull three cards" or "make my pocket week" |
 | [Claude Cowork](#claude-cowork) | upload `analog-bag.zip` as a skill | ask for a launch calendar in a Cowork task |
 
-You need Python 3.10 or newer. For PDFs you also need Google Chrome, Chromium or Microsoft Edge installed.
-Without one you still get every page as a web page: open it, Print, Save as PDF.
+You need Python 3.10 or newer ([Start here](#start-here) shows how to check). For PDFs you also need Google Chrome, Chromium or Microsoft Edge installed.
+Without one you still get every page as a web page: open it, choose Print, then Save as PDF.
 
 ### Claude Code
 ```sh
@@ -41,7 +68,7 @@ Open Claude Code in a folder where you want your pages saved, and ask: "Pull thr
 To update later: `git -C ~/.claude/skills/analog-bag pull`.
 
 ### Claude Cowork
-Cowork (the Claude desktop app) runs tasks in a sandbox on your computer that can only reach the folders you give it.
+Cowork (the Claude desktop app) runs tasks in a sandbox: a safe, closed-off space on your computer that can only reach the folders you give it.
 1. Download `analog-bag.zip` from the [latest release](https://github.com/RochaStone/analog-bag/releases/latest).
 2. In the Claude desktop app: Customize > Skills, then + > Create skill > Upload a skill, and pick the zip.
 3. In Settings > Capabilities, turn on code execution and file creation.
@@ -73,6 +100,15 @@ python3 readback/merge.py tasks.md new.md
 ```
 
 <p align="center"><img src="examples/launch.png" width="380" alt="A pink lined A4 page: SACRED LAUNCH CALENDAR, Spring Breath Retreat, a plum moon strip and six stage cards with tick boxes."> <img src="examples/week.png" width="268" alt="An A5 pink lined page: THIS WEEK with a moon for each day, the one thing, three moves, one number to watch and a let go line."></p>
+
+## If it goes wrong
+These happen to everyone the first time. Each one has a quick fix.
+
+- **"command not found: python3", or a version below 3.10.** Install Python from [python.org/downloads](https://www.python.org/downloads/), close the terminal, open a fresh one and run step 2 again.
+- **"command not found: git", or a box asking to install developer tools.** On a Mac, click Install in that box and wait for it to finish, then run step 3 again. Git is the free tool that does the cloning.
+- **You got a web page instead of a PDF.** The kit makes PDFs with Google Chrome, and it didn't find one. Open the `.html` file it made, choose Print, then Save as PDF, with margins set to none and background graphics on. Or install Chrome and ask again.
+
+If the moon lands a day off, tell Claude your city. The kit uses your clock to pick the local date.
 
 ## Make it yours
 Every page reads one `style.json`: your colours, your fonts, your handle and your own words on the to-do line and the card backs.

@@ -16,6 +16,17 @@ In Claude Code, default to `./analog-bag-out` in their current project unless th
 Tell the user, in plain words, where each file landed and how to print it: actual size (100%),
 margins none, background graphics on.
 
+## How to guide her
+
+She may never have opened a terminal, and she may be a little nervous. Be warm, kind and certain.
+
+- Ask one question at a time. Wait for the answer.
+- Reflect it back in one sentence ("Spring Breath Retreat, starting Monday 2 November, six weeks, timed to Lisbon.").
+- Say what you're about to do before you do it ("I'm laying your launch on the moon now.").
+- End every step with what she has and what she can do next ("Your page is in your folder as launch.pdf. Print it at actual size, or ask me for the matching pocket week.").
+- If she needs the terminal, tell her exactly what to type and what she'll see when it worked.
+- Never say "simply" or "just". If something fails, say it kindly, fix it, and tell her it happens to everyone.
+
 ## 1. Hook Tarot
 
 **Pull three cards** ("pull three cards", "hook tarot", "give me hooks"):
@@ -26,7 +37,7 @@ python3 tarot/pull.py --topic "<what it's about>" --audience "<who it's for>"
 
 Optional: `--suit cups|wands|swords|pentacles`, `--majors`, `--seed N`, `--json`.
 
-The draw is three positions: what they believe (past), what you'll say (present), what they'll
+Ask what the post is about, then who it's for, one at a time, if she hasn't said. The draw is three positions: what they believe (past), what you'll say (present), what they'll
 do (future). Then you do the writing:
 1. Fill every `{slot}` in each structure with the user's topic and audience, in her words.
    Use what you know about her offer. Never invent numbers, results or client stories. If a
@@ -57,7 +68,8 @@ python3 launch/launch.py --offer "<offer name>" --date YYYY-MM-DD --weeks 6 --ou
   --utc-offset <+08:00> --hemisphere north
 ```
 
-- `--date` is the first day of the launch window. Ask for it if she hasn't said.
+- Ask, one at a time: the name of the offer, the first day of the launch window (`--date`), and
+  her city (for `--utc-offset`). Reflect all three back before you run it.
 - `--utc-offset` sets her clock so phases land on her local date. Ask her city if unsure; the
   default is this computer's clock, which inside Cowork may be UTC.
 - `--hemisphere south` flips the season names and draws the moon as she sees it.
@@ -78,6 +90,7 @@ python3 week/week.py --out <folder>                 # the coming Monday, blank, 
 python3 week/week.py --out <folder> --two-up        # two copies on one A4 or Letter sheet
 ```
 
+Ask whether she wants it blank to fill in pen (the default) or with her one thing written in.
 Optional prefill, only when she asks: `--one-thing "..."`, `--move "..."` (up to three),
 `--number "..."`, `--let-go "..."`. Also `--start YYYY-MM-DD`, `--utc-offset`, `--hemisphere`.
 
@@ -115,7 +128,7 @@ When she drops a photo of a filled page:
    task. If it reports a format problem, fix `new.md` and run it again. Nothing is written until
    the format is clean. `--dry-run` shows the result first. `--check FILE` only validates.
 4. Tell her what changed in one or two lines: what's newly done, what's new, what's still open.
-   Delete `new.md` afterwards.
+   Delete `new.md` afterwards. Then offer the next step: a fresh pocket week for the week ahead.
 
 ## Make it hers (style.json)
 
