@@ -35,7 +35,7 @@ body{background:#fff}
 .kicker{color:var(--hot);font-size:7pt}
 h1{font-family:var(--didone);font-weight:900;color:var(--hot);font-size:31pt;line-height:.95;letter-spacing:-.01em}
 .range{font-size:8.6pt;text-align:right}
-.range .marker{font-size:9pt;display:block;transform:rotate(-3deg);margin-bottom:1mm}
+.range .marker{font-size:8.4pt;display:block;white-space:nowrap;transform:rotate(-3deg);margin-bottom:1mm}
 .moons{display:grid;grid-template-columns:repeat(7,1fr);gap:1mm;margin:3.5mm 0 3mm;padding:2mm 1.5mm;background:var(--plum);border-radius:1.6mm}
 .day{display:flex;flex-direction:column;align-items:center;color:var(--cream);font-size:6.4pt;gap:.6mm}
 .day .tag{color:var(--gold);font-size:5.6pt}
@@ -47,7 +47,7 @@ h1{font-family:var(--didone);font-weight:900;color:var(--hot);font-size:31pt;lin
 .one .line{border-bottom:.3mm solid var(--candy);height:7.2mm}
 .write{font-family:var(--marker);color:var(--ink);font-size:12pt;line-height:7.2mm}
 .move{display:flex;align-items:center;gap:2.4mm;border-bottom:.3mm solid var(--candy);height:8.2mm}
-.move .n{font-family:var(--didone);font-weight:900;color:var(--candy);font-size:13pt;width:4mm}
+.move .n{font-family:var(--didone);font-weight:900;color:var(--hot);font-size:11pt;width:5mm;flex:none;text-align:left;line-height:1}
 .number{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:2mm;margin:1mm 0 4mm}
 .cell{background:rgba(255,255,255,.75);border:.3mm solid var(--candy);border-radius:1.2mm;padding:1.2mm 2mm;height:13mm}
 .cell .tag{font-size:5.8pt;color:var(--plum)}

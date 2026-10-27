@@ -15,6 +15,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from core import render  # noqa: E402
+from core import style as S  # noqa: E402
 from core.style import page  # noqa: E402
 
 EX = ROOT / "examples"
@@ -59,39 +60,64 @@ def main() -> int:
         "--move", "Tell the origin story", "--html-only")
     png(BUILD / "week.html", EX / "week.png", 560, 794)
 
-    hero = page("analog-bag hero", HERO_CSS, HERO_BODY.format(
-        tarot=(EX / "tarot-cards.png").as_uri(), launch=(EX / "launch.png").as_uri(),
-        week=(EX / "week.png").as_uri()))
+    ok, err = render.html_to_png(BUILD / "launch.html", BUILD / "launch-top.png", 794, 250, 2)
+    if not ok:
+        raise SystemExit(f"render failed: {err}")
     hero_html = BUILD / "hero.html"
-    hero_html.write_text(hero, encoding="utf-8")
+    hero_html.write_text(hero_page(), encoding="utf-8")
     (ROOT / "docs" / "img").mkdir(parents=True, exist_ok=True)
-    png(hero_html, ROOT / "docs" / "img" / "hero.png", 1400, 760)
+    png(hero_html, ROOT / "docs" / "img" / "hero.png", 1600, 900)
     print("examples and hero rendered")
     return 0
 
 
+def hero_page() -> str:
+    """The README hero: real card HTML fanned in the centre, the week page on the
+    right, the launch page cropped to its title and moon strip, bottom left."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("tarot_print_hero", ROOT / "tarot" / "print.py")
+    tp = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(tp)
+    deck = {c["name"]: c for c in tp.load_deck()["cards"]}
+    cards = [tp.front(deck[n], "tarot", 0, 0) for n in ("The Receipt", "The Hotline", "Ace of Cups")]
+    fan = (f"<div class='slot back'>{tp.back('tarot', 0, 0)}</div>"
+           f"<div class='slot left'>{cards[0]}</div><div class='slot right'>{cards[2]}</div>"
+           f"<div class='slot mid'>{cards[1]}</div>")
+    body = HERO_BODY.format(fan=fan, week=(EX / "week.png").as_uri(),
+                            launch=(BUILD / "launch-top.png").as_uri(), scrawl=S.line("scrawl"))
+    return page("analog-bag hero", ":root{--cw:70mm;--ch:120mm;--s:1}" + tp.CSS + HERO_CSS, body)
+
+
 HERO_CSS = """
-body{background:var(--hot);width:1400px;height:760px;overflow:hidden}
-.desk{position:relative;width:1400px;height:760px;background:var(--hot)}
-.desk::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.18),transparent 55%)}
-.shot{position:absolute;box-shadow:12px 18px 30px rgba(74,16,51,.45);background:#fff}
-.launch{left:70px;top:70px;width:430px;transform:rotate(-5deg)}
-.week{left:1000px;top:120px;width:330px;transform:rotate(4deg)}
-.tarot{left:430px;top:330px;width:640px;transform:rotate(1.5deg);background:transparent;box-shadow:none}
-.title{position:absolute;left:520px;top:58px;color:var(--white);font-family:var(--didone);font-weight:900;font-size:96px;line-height:.9;letter-spacing:-.02em}
-.title small{display:block;font-family:var(--tag);font-size:20px;letter-spacing:.2em;font-weight:700;margin-bottom:12px}
-.scrawl{position:absolute;left:500px;top:262px;font-family:var(--marker);color:var(--ink);font-size:27px;transform:rotate(-4deg)}
-.tape{position:absolute;width:120px;height:34px;background:rgba(255,225,236,.85)}
+html,body{width:1600px;height:900px;overflow:hidden;background:var(--hot)}
+.desk{position:relative;width:1600px;height:900px;background:var(--hot);overflow:hidden}
+.desk::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 25% 15%,rgba(255,255,255,.22),transparent 55%)}
+.label{position:absolute;left:84px;top:70px;color:var(--white);font-family:var(--tag);font-weight:700;font-size:22px;letter-spacing:.24em}
+.word{position:absolute;left:78px;top:104px;color:var(--white);font-family:var(--didone);font-weight:900;font-size:116px;line-height:.88;letter-spacing:-.02em}
+.scrawl{position:absolute;left:84px;top:326px;font-family:var(--marker);color:var(--red);font-size:28px;transform:rotate(-4deg);
+  background:var(--paper);padding:2px 18px;box-shadow:4px 6px 0 rgba(74,16,51,.25)}
+.fan{position:absolute;left:790px;top:500px;width:0;height:0}
+.slot{position:absolute;left:0;top:0;transform-origin:50% 100%}
+.slot .card{position:relative;transform:translate(-50%,-50%) scale(1.04);transform-origin:50% 50%;box-shadow:3mm 4mm 6mm rgba(74,16,51,.45)}
+.slot.back{transform:translate(215px,-95px) rotate(24deg)}
+.slot.left{transform:translate(-160px,30px) rotate(-12deg)}
+.slot.right{transform:translate(160px,30px) rotate(12deg)}
+.slot.mid{transform:translate(0,-14px)}
+.shot{position:absolute;box-shadow:14px 20px 32px rgba(74,16,51,.45);background:#fff}
+.week{left:1328px;top:300px;width:236px;transform:rotate(4deg)}
+.launch{left:66px;top:640px;width:450px;transform:rotate(-3deg)}
+.tape{position:absolute;width:118px;height:32px;background:rgba(255,225,236,.88)}
 """
 
-HERO_BODY = """<div class='desk'>
+HERO_BODY = """<div class='desk grain'>
 <img class='shot launch' src='{launch}' alt=''>
-<div class='tape' style='left:220px;top:52px;transform:rotate(-8deg)'></div>
+<div class='tape' style='left:232px;top:622px;transform:rotate(-6deg)'></div>
+<div class='label'>ROCHA CODED</div>
+<div class='word'>ANALOG<br>BAG</div>
+<div class='scrawl'>{scrawl}</div>
+<div class='fan'>{fan}</div>
 <img class='shot week' src='{week}' alt=''>
-<div class='tape' style='left:1120px;top:100px;transform:rotate(6deg)'></div>
-<div class='title'><small>ROCHA CODED</small>ANALOG<br>BAG</div>
-<div class='scrawl'>build your founder world</div>
-<img class='shot tarot' src='{tarot}' alt=''>
+<div class='tape' style='left:1390px;top:284px;transform:rotate(7deg)'></div>
 </div>"""
 
 if __name__ == "__main__":
