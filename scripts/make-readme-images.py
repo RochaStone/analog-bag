@@ -195,7 +195,13 @@ def sheet(names: list[dict], out: Path, motif: str = "analog", cols: int = 6) ->
 
 
 def majors() -> None:
-    sheet(load_tarot().load_deck()["cards"][:22], IMG / "majors.png")
+    """The sheet is large, so it ships as a JPEG (macOS sips does the conversion)."""
+    raw = BUILD / "majors.png"
+    sheet(load_tarot().load_deck()["cards"][:22], raw)
+    res = subprocess.run(["sips", "-s", "format", "jpeg", "-s", "formatOptions", "60", str(raw),
+                          "--out", str(IMG / "majors.jpg")], capture_output=True, text=True)
+    if res.returncode != 0:
+        raise SystemExit(f"could not convert the majors sheet to JPEG: {res.stderr.strip()}")
 
 
 IMAGES_MD = """# Images
