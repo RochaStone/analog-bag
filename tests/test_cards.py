@@ -85,22 +85,25 @@ class CardTests(unittest.TestCase):
         self.assertIn("lore pixel", C.back_html("cyberpunk"))
         self.assertIn("lore holo", C.back_html("analog"))
 
-    def test_painted_objects_exist_and_the_rest_are_listed_to_paint(self):
+    def test_all_22_majors_are_painted(self):
         for f in set(C.MAJOR_OBJECT.values()) | {x for s in C.SUITS.values() for x in s[2:]}:
             self.assertTrue((C.OBJECTS / f).is_file(), f)
-        to_paint = (ROOT / "docs" / "MAJORS-TO-PAINT.md").read_text(encoding="utf-8")
+        self.assertEqual(sorted(C.MAJOR_OBJECT), [c["id"] for c in DECK["cards"][:22]])
+        self.assertIn("All 22 Major Arcana are painted", (ROOT / "docs" / "MAJORS-TO-PAINT.md").read_text(encoding="utf-8"))
         for card in DECK["cards"][:22]:
-            self.assertNotEqual(card["id"] in C.MAJOR_OBJECT, card["id"] in C.PAINT_NEXT, card["name"])
-            if card["id"] in C.PAINT_NEXT:
-                self.assertIn(f"**{card['name']}**", to_paint)
-                self.assertIn(f"`{C.PAINT_NEXT[card['id']]}`", to_paint)
+            front = C.front_html(card, "analog")
+            self.assertIn(C.MAJOR_OBJECT[card["id"]], front, card["name"])
+            self.assertNotIn("hero type", front, card["name"])
+        door = C.front_html(DECK["cards"][9], "analog")
+        self.assertIn("obj major framed", door)  # a vignette: drop shadow, no white outline
+        self.assertNotIn("framed", C.front_html(DECK["cards"][8], "analog"))
 
-    def test_a_painted_major_is_used_when_its_file_exists(self):
+    def test_a_missing_painting_falls_back_to_the_pixel_sticker(self):
         by = {c["id"]: c for c in DECK["cards"]}
         with tempfile.TemporaryDirectory() as d:
             for f in C.MAJOR_OBJECT.values():
-                Path(d, f).write_bytes((C.OBJECTS / f).read_bytes())
-            Path(d, "envelope.png").write_bytes(b"\x89PNG\r\n\x1a\n")  # only one of the ten painted
+                if f != "door.png":
+                    Path(d, f).write_bytes((C.OBJECTS / f).read_bytes())
             real, C.OBJECTS = C.OBJECTS, Path(d)
             try:
                 painted = C.front_html(by["major-08"], "analog")
@@ -109,7 +112,7 @@ class CardTests(unittest.TestCase):
                 C.OBJECTS = real
         self.assertIn("envelope.png", painted)
         self.assertNotIn("hero type", painted)
-        self.assertIn("hero type px", waiting)  # no door.png yet: the pixel sticker stays
+        self.assertIn("hero type px", waiting)  # door.png gone: the pixel sticker stands in
         self.assertNotIn("door.png", waiting)
 
     def test_your_own_objects_and_font_file(self):

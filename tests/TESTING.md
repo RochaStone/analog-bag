@@ -45,9 +45,9 @@ python3 -m unittest -v
   the set shape, unique ids and open slots. The Samhain 2026 set has eight cards, real objects, its name on
   the face and the back, and none of the banned words. A set prints as its own deck, and a draw with a set
   mixes both.
-- **Painted majors.** A major uses its painted PNG when the file is in `tarot/objects/`, and keeps its pixel
-  sticker when the file is missing (both branches run against a temporary objects folder). The paint list
-  and the code agree.
+- **Painted majors.** All 22 Major Arcana carry their painted object and the files exist. The Quiet Room's
+  door, a vignette rather than a cut-out, gets the drop shadow without the white outline. When a painting
+  is missing, its card falls back to the pixel sticker (run against a temporary objects folder).
 - **oracle.html.** The committed page equals a fresh build, carries no absolute paths, loads nothing beyond
   Google Fonts, and every object it points at exists. In headless Chrome: a three-card pull reveals three
   distinct cards; the full spread with the Samhain set on reveals every card, stays within a 390px phone

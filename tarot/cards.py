@@ -29,35 +29,34 @@ from pixels import PIXELS, pixel_sticker
 HERE = Path(__file__).resolve().parent
 OBJECTS = HERE / "objects"
 
-# Majors with a painted object. The rest get the ransom-note treatment (see docs/MAJORS-TO-PAINT.md).
+# Every Major Arcana has a painted object. If a file is missing, the card falls back to its
+# pixel sticker (pixels.py), then to the ransom-note numeral.
 MAJOR_OBJECT = {
+    "major-00": "first-day.png",         # The First Day
+    "major-01": "spotlight.png",         # The One Woman Show
     "major-02": "thermal-printer.png",   # The Receipt
+    "major-03": "guest-check.png",       # The Guest Check
+    "major-04": "alarm-clock.png",       # Too Busy
     "major-05": "flip-phone.png",        # The Hotline
+    "major-06": "front-page.png",        # The Front Page
+    "major-07": "key.png",               # The Plot Twist
+    "major-08": "envelope.png",          # The Permission Slip
+    "major-09": "door.png",              # The Quiet Room
     "major-10": "seashell.png",          # The Full Circle
     "major-11": "crystal-ball.png",      # The Fine Print
     "major-12": "incense.png",           # The Pause
     "major-13": "pillar-candle.png",     # The Ending
     "major-14": "cauldron.png",          # The Recipe
     "major-15": "rose.png",              # The Confession (sub rosa)
+    "major-16": "tower.png",             # The Collapse
     "major-17": "gold-star.png",         # The North Star
     "major-18": "crescent-moon.png",     # The Night Shift
     "major-19": "lantern.png",           # The Golden Hour
+    "major-20": "scales.png",            # The Verdict
     "major-21": "shell-map.png",         # The Whole World
 }
-# Majors still to paint (docs/MAJORS-TO-PAINT.md). When the painted PNG is saved in tarot/objects/
-# under this name the card uses it; until then the card keeps its pixel sticker.
-PAINT_NEXT = {
-    "major-00": "first-day.png",       # The First Day
-    "major-01": "spotlight.png",       # The One Woman Show
-    "major-03": "guest-check.png",     # The Guest Check
-    "major-04": "alarm-clock.png",     # Too Busy
-    "major-06": "front-page.png",      # The Front Page
-    "major-07": "key.png",             # The Plot Twist
-    "major-08": "envelope.png",        # The Permission Slip
-    "major-09": "door.png",            # The Quiet Room
-    "major-16": "tower.png",           # The Collapse
-    "major-20": "scales.png",          # The Verdict
-}
+# Paintings that are a framed scene, not a cut-out: the drop shadow, no white outline.
+FRAMED = {"door.png"}
 GRAIN = f"url('{(OBJECTS / 'grain.png').as_uri()}') 0 0/240px 240px"
 # suit: (accent css variable, what it is for, main object, second object)
 SUITS = {
@@ -183,10 +182,7 @@ def object_for(card: dict) -> list[str]:
             return [] if own[key] == "none" else [own[key]]
     if card["arcana"] == "major":
         f = MAJOR_OBJECT.get(card["id"]) or card.get("object")
-        if f and (OBJECTS / f).is_file():
-            return [str(OBJECTS / f)]
-        painted = PAINT_NEXT.get(card["id"])
-        return [str(OBJECTS / painted)] if painted and (OBJECTS / painted).is_file() else []
+        return [str(OBJECTS / f)] if f and (OBJECTS / f).is_file() else []
     _, _, a, b = SUITS[card["suit"]]
     return [str(OBJECTS / a), str(OBJECTS / b)]
 
@@ -212,7 +208,8 @@ def hero(card: dict) -> str:
     if card["arcana"] == "major":
         if art:
             rot = rnd.uniform(-6, 6)
-            return (f"<div class='hero'><i class='disc'></i><img class='obj major' src='{_src(art[0])}' alt='' "
+            framed = " framed" if Path(art[0]).name in FRAMED else ""
+            return (f"<div class='hero'><i class='disc'></i><img class='obj major{framed}' src='{_src(art[0])}' alt='' "
                     f"style='--rot:{rot:.1f}deg'><span class='fig'>fig. {esc(card['numeral'])}</span></div>")
         n = card["numeral"]
         if card["id"] in PIXELS and not type_only(card):
@@ -395,6 +392,7 @@ CSS = """
   filter:drop-shadow(.5cqw 0 0 #fff) drop-shadow(-.5cqw 0 0 #fff) drop-shadow(0 .5cqw 0 #fff) drop-shadow(0 -.5cqw 0 #fff)
   drop-shadow(.4cqw 1.4cqw 1.2cqw rgba(30,6,24,.42))}
 .obj.major{right:-2cqw;top:0;height:100%;max-width:78cqw}
+.obj.framed{filter:drop-shadow(.4cqw 1.4cqw 1.2cqw rgba(30,6,24,.42))}
 .obj.minor{top:4%;height:88%;max-width:56cqw}
 .obj.minor.l{left:5cqw}.obj.minor.r{right:5cqw}
 .obj.second{top:2%;height:38%;max-width:30cqw}

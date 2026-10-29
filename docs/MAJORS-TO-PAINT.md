@@ -1,20 +1,7 @@
 # Majors to paint
 
-Twelve of the 22 Major Arcana shipped with a painted object. These ten were painted next, from the prompts below.
+All 22 Major Arcana are painted. Each card's object is listed in `MAJOR_OBJECT` in `tarot/cards.py`, and the files live in `tarot/objects/`.
 
-Each card picks up its painting on its own. When the cut-out PNG is in `tarot/objects/` under the file name shown, the card uses it. When the file is missing, the card keeps its pixel sticker. The ids and file names live in `PAINT_NEXT` in `tarot/cards.py`, and the tests check that this list and the code agree and that both branches work.
+If an object file is ever missing, its card falls back to its pixel sticker, and the tests check that fallback.
 
-Each line is one image prompt in the merwitch register. Use the Pocket Coven shell map as the style reference, the same as the approved thermal printer. Ask for a 4:5 image, then cut the object out onto a transparent background.
-
-| Card | File | Prompt |
-|---|---|---|
-| **The First Day** (0, `major-00`) | `first-day.png` | A tiny pearl-pink seedling sprouting from an open iridescent seashell, gold filigree on the shell lip, one dewdrop catching candlelight, on a pink marble vanity at dawn. Cyberpunk whimsy, Y2K, witchcore. Painted, hyper-detailed, in exactly the style of the reference image. No text. |
-| **The One Woman Show** (I, `major-01`) | `spotlight.png` | A vintage pearl-pink stage microphone on a gold stand under a single soft spotlight beam, a small velvet curtain swag in plum behind it, scattered gold stars on the floor. Cyberpunk whimsy, Y2K, witchcore. Painted, hyper-detailed, in exactly the style of the reference image. No text. |
-| **The Guest Check** (III, `major-03`) | `guest-check.png` | A blush-pink diner guest check pad with a gold clip and a pearl-topped pen resting across it, a coupe glass and a small plate of macarons beside it, on pink marble. Cyberpunk whimsy, Y2K, witchcore. Painted, hyper-detailed, in exactly the style of the reference image. No text, no writing on the check. |
-| **Too Busy** (IV, `major-04`) | `alarm-clock.png` | A pearl-pink twin-bell alarm clock with gold hands and a tiny crescent-moon charm hanging from one bell, ringing, small sparkles around it. Cyberpunk whimsy, Y2K, witchcore. Painted, hyper-detailed, in exactly the style of the reference image. No text, no numbers on the face. |
-| **The Front Page** (VI, `major-06`) | `front-page.png` | A folded pink newspaper tied with a satin ribbon and a gold wax seal, resting on a shell-shaped vanity tray beside a crystal, soft candlelight. Cyberpunk whimsy, Y2K, witchcore. Painted, hyper-detailed, in exactly the style of the reference image. No text, no faces, no photos on the page. |
-| **The Plot Twist** (VII, `major-07`) | `key.png` | An ornate gold skeleton key with a pearl and a pink crystal set in its bow, tied to a twist of plum ribbon, on a velvet cushion. Cyberpunk whimsy, Y2K, witchcore. Painted, hyper-detailed, in exactly the style of the reference image. No text. |
-| **The Permission Slip** (VIII, `major-08`) | `envelope.png` | A blush-pink envelope sealed with a gold heart-shaped wax seal, a pressed dried rose tucked under the flap, iridescent edges. Cyberpunk whimsy, Y2K, witchcore. Painted, hyper-detailed, in exactly the style of the reference image. No text. |
-| **The Quiet Room** (IX, `major-09`) | `door.png` | A small arched door of pearl-pink shell set into a moss and crystal wall, a tiny gold lantern glowing beside it, the door open a crack onto soft candlelight. Cyberpunk whimsy, Y2K, witchcore. Painted, hyper-detailed, in exactly the style of the reference image. No text. |
-| **The Collapse** (XVI, `major-16`) | `tower.png` | A tiny pearl-pink seashell tower cracked down the middle with a gold lightning bolt, pearls tumbling from it, still standing on its base. Cyberpunk whimsy, Y2K, witchcore. Painted, hyper-detailed, in exactly the style of the reference image. No text. |
-| **The Verdict** (XX, `major-20`) | `scales.png` | A pair of gold balance scales with pearl-pink shell pans, one pan holding a crystal and the other a pearl, perfectly level, under a crescent moon. Cyberpunk whimsy, Y2K, witchcore. Painted, hyper-detailed, in exactly the style of the reference image. No text. |
+To repaint one, use the Pocket Coven shell map as the style reference, in the merwitch register: cyberpunk whimsy, Y2K, witchcore, painted and hyper-detailed, no text. Ask for a 4:5 image and cut the object out onto a transparent background. A scene that won't cut out cleanly can stay a soft-edged vignette: add its file name to `FRAMED` in `tarot/cards.py` so it gets the drop shadow without the white outline. The Quiet Room's door is one of these.
