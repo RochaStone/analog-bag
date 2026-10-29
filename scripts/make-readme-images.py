@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """Render every image in the README and examples/ from the tool itself.
 
-    python3 scripts/make-readme-images.py
+    python3 scripts/make-readme-images.py                      # the bundled example style
+    python3 scripts/make-readme-images.py --style my-style.json # your own look (and font file)
 
 Needs Chrome. Fixed dates and UTC keep the samples reproducible. Writes:
-  docs/img/hero.png          the y2k-blog window (analog-bag.exe) with the kit inside
-  docs/img/triptych.png      the same week in analog, cyberpunk and y2k-blog
+  docs/img/hero.png          three HOOK ORACLE cards fanned over the pocket week, in the zine look
+  docs/img/triptych.png      one card and its week page in analog, cyberpunk and y2k-blog
+  docs/img/majors.png        a contact sheet of all 22 Major Arcana
   docs/img/step-01..05.svg   pixel step badges for Start here
   docs/img/divider.svg, heart.svg
   examples/                  cards, launch and week pages in each motif, the .ics, a pull
@@ -13,6 +15,7 @@ Needs Chrome. Fixed dates and UTC keep the samples reproducible. Writes:
 """
 from __future__ import annotations
 
+import argparse
 import importlib.util
 import subprocess
 import sys
@@ -30,12 +33,13 @@ EX = ROOT / "examples"
 IMG = ROOT / "docs" / "img"
 BUILD = ROOT / "out" / "readme-build"
 PY = sys.executable
+STYLE = str(S.BUNDLED)
 WEEK_FILL = ["--one-thing", "Open the retreat waitlist", "--move", "Write the welcome email",
              "--move", "Tell the origin story"]
 
 
 def run(*args: str) -> str:
-    res = subprocess.run([PY, *args], cwd=ROOT, capture_output=True, text=True)
+    res = subprocess.run([PY, *args, "--style", STYLE], cwd=ROOT, capture_output=True, text=True)
     if res.returncode != 0:
         raise SystemExit(f"failed: {' '.join(args)}\n{res.stderr}")
     return res.stdout
@@ -55,7 +59,9 @@ def examples() -> None:
     run("tarot/print.py", "--out", str(BUILD), "--only", "The Receipt,The Hotline,Ace of Cups",
         "--strip", str(EX / "tarot-cards.png"))
     (EX / "pull.txt").write_text(run("tarot/pull.py", "--topic", "my spring retreat", "--audience",
-                                     "burnt-out founders", "--seed", "7"), encoding="utf-8")
+                                     "burnt-out founders", "--seed", "7", "--story", str(BUILD / "story")),
+                                 encoding="utf-8")
+    (EX / "story.png").write_bytes((BUILD / "story" / "story-2-present.png").read_bytes())
     for motif in M.MOTIFS:
         out = BUILD / motif
         run("launch/launch.py", "--offer", "Spring Breath Retreat", "--date", "2026-11-02", "--weeks", "6",
@@ -94,69 +100,102 @@ def load_tarot():
     return tp
 
 
+def desk_css(w: int, h: int, ground: str = "var(--plum)") -> str:
+    """A zine desk: the ground, a riso dot screen and paper grain."""
+    return (f"html,body{{width:{w}px;height:{h}px;overflow:hidden;background:{ground}}}"
+            ".desk{position:relative;width:100%;height:100%;overflow:hidden}"
+            ".desk::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,"
+            "color-mix(in srgb,var(--candy) 22%,transparent) 0 1.6px,transparent 2.3px);background-size:11px 11px}"
+            ".desk::after{content:'';position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.8;"
+            f"background:{tp_cards().GRAIN}}}"
+            ".lay{position:absolute;transform-origin:50% 50%}"
+            ".lay .card{position:relative;box-shadow:10px 16px 26px rgba(12,2,8,.5)}"
+            ".page{position:absolute;box-shadow:14px 20px 30px rgba(12,2,8,.45)}"
+            ".tape2{position:absolute;width:150px;height:40px;background:color-mix(in srgb,var(--candy) 75%,transparent);"
+            "clip-path:polygon(0 8%,4% 0,9% 10%,14% 0,100% 0,96% 12%,100% 24%,95% 38%,100% 52%,96% 66%,100% 80%,"
+            "95% 92%,100% 100%,0 100%,4% 86%,0 72%,5% 58%,0 44%,4% 30%,0 18%)}")
+
+
+def tp_cards():
+    sys.path.insert(0, str(ROOT / "tarot"))
+    import cards
+    return cards
+
+
+def card_page(title: str, css: str, body: str) -> str:
+    c = tp_cards()
+    return page(title, c.css() + css, c.fonts_extra() + f"<style>{c.tile_css()}</style>" + body)
+
+
+def lay(html: str, x: int, y: int, w: int, rot: float, z: int = 1) -> str:
+    h = round(w * 120 / 70)
+    return (f"<div class='lay' style='left:{x}px;top:{y}px;width:{w}px;height:{h}px;"
+            f"transform:rotate({rot}deg);z-index:{z};--cw:{w}px;--ch:{h}px'>{html}</div>")
+
+
 def hero() -> None:
-    tp = load_tarot()
-    deck = {c["name"]: c for c in tp.load_deck()["cards"]}
-    cards = [tp.front(deck[n], "tarot", 0, 0) for n in ("The Receipt", "The Hotline", "Ace of Cups")]
-    fan = (f"<div class='slot back'>{tp.back('tarot', 0, 0)}</div><div class='slot left'>{cards[0]}</div>"
-           f"<div class='slot right'>{cards[2]}</div><div class='slot mid'>{cards[1]}</div>")
-    star = M.star("16px")
-    marquee = f" {star} ".join(["pull three cards", "lay your launch on the moon", "plan your week in pen",
-                                "photograph it, Claude reads it back"])
-    side = (f"<aside class='side'><div><h4>about me</h4>a printable founder kit for your bag</div>"
-            f"<div><h4>mood</h4><div class='mood'>{moon_svg(0.48, 7)} full moon</div></div>"
-            f"<div><h4>currently reading</h4>the hook tarot, 78 cards</div>"
-            f"<div><h4>guestbook</h4>sign it on GitHub {M.heart('16px', S.color('accent'))}</div>"
-            f"<div class='bottom'>{M.hit_counter()}</div></aside>")
-    main = (f"<div class='mainc'><div class='marquee'>{star} {marquee} {star}</div>"
-            f"<div class='fan'>{fan}</div><img class='week' src='{(EX / 'week.png').as_uri()}' alt=''></div>")
-    body = f"<div class='desk hero'>{M.window('analog-bag.exe', main + side)}</div>"
-    css = (":root{--cw:70mm;--ch:120mm;--s:1}" + tp.CSS + M.css() + HERO_CSS
-           + f".desk{{background-image:{M.tiled_bg()}}}")
+    c = tp_cards()
+    deck = {d["name"]: d for d in load_tarot().load_deck()["cards"]}
+    one = lambda n: c.front_html(deck[n], "analog", None, None)  # noqa: E731
+    word = c.ransom("HOOK ORACLE", "word")
+    body = (f"<div class='desk'>"
+            f"<img class='page' src='{(EX / 'week.png').as_uri()}' alt='' "
+            f"style='left:96px;top:118px;width:520px;transform:rotate(-6deg)'>"
+            f"<i class='tape2' style='left:250px;top:96px;transform:rotate(-9deg)'></i>"
+            + lay(c.back_html("analog", None, None), 1290, 170, 280, 13, 1)
+            + lay(one("The Receipt"), 470, 190, 320, -10, 2)
+            + lay(one("Ace of Cups"), 1040, 150, 320, 9, 3)
+            + lay(one("The Hotline"), 750, 110, 340, -1, 4)
+            + f"<div class='mark'>{word}</div>"
+            f"<div class='line'>pull three cards {M.star('22px')} print the deck {M.star('22px')} "
+            f"plan your week in pen</div></div>")
+    css = desk_css(1600, 900) + """
+.mark{position:absolute;left:70px;top:740px;font-size:62px;z-index:6;transform:rotate(-3deg)}
+.mark .ransom span{box-shadow:3px 5px 8px rgba(12,2,8,.45)}
+.line{position:absolute;right:56px;bottom:38px;z-index:6;font-family:var(--mono);font-size:20px;letter-spacing:.12em;
+  color:var(--cream);display:flex;align-items:center;gap:12px;text-transform:uppercase}
+"""
     path = BUILD / "hero.html"
-    path.write_text(page("analog-bag hero", css, body), encoding="utf-8")
+    path.write_text(card_page("analog-bag hero", css, body), encoding="utf-8")
     png(path, IMG / "hero.png", 1600, 900)
 
 
-HERO_CSS = """
-html,body{width:1600px;height:900px;overflow:hidden;background:var(--paper)}
-.desk.hero{width:1600px;height:900px;padding:40px 44px;display:flex}
-.hero .win9{flex:1;border-width:3px;border-radius:12px;box-shadow:10px 14px 0 rgba(30,6,20,.25)}
-.hero .win9 .bar{padding:10px 16px}
-.hero .win9 .btns i{width:16px;height:16px;margin-right:6px}
-.hero .win9 .wtitle{font-size:20px}
-.hero .mainc{flex:1;position:relative;overflow:hidden}
-.hero .marquee{font-size:16px;padding:12px 22px;border-bottom:2px dashed var(--plum);display:flex;gap:10px;align-items:center}
-.hero .side{width:320px;font-size:18px;gap:18px;padding:22px;border-left:2px dashed var(--plum)}
-.hero .side h4{font-size:14px;border-bottom-width:2px;padding-bottom:4px;margin-bottom:8px}
-.hero .mood{display:flex;align-items:center;gap:10px}
-.hero .side .bottom{margin-top:auto}
-.hero .counter{font-size:15px;padding:8px 10px;border-radius:6px}
-.fan{position:absolute;left:440px;top:440px;width:0;height:0}
-.slot{position:absolute;left:0;top:0;transform-origin:50% 100%}
-.slot .card{position:relative;transform:translate(-50%,-50%) scale(.92);box-shadow:3mm 5mm 7mm rgba(12,2,8,.45)}
-.slot.back{transform:translate(215px,-80px) rotate(22deg)}
-.slot.left{transform:translate(-185px,30px) rotate(-12deg)}
-.slot.right{transform:translate(185px,30px) rotate(12deg)}
-.slot.mid{transform:translate(0,-12px)}
-.hero img.week{position:absolute;right:46px;top:150px;width:290px;transform:rotate(3deg);box-shadow:10px 14px 24px rgba(12,2,8,.35)}
-"""
-
-
 def triptych() -> None:
-    cells = "".join(
-        f"<figure><img src='{(EX / f'week{suffix(m)}.png').as_uri()}' alt=''><figcaption class='pixel'>"
-        f"{M.star('18px')} {esc(m)}</figcaption></figure>" for m in M.MOTIFS)
-    css = """
-html,body{width:1600px;height:780px;overflow:hidden;background:var(--plum)}
-.row{display:flex;justify-content:center;gap:60px;padding:44px 0}
-figure{display:flex;flex-direction:column;align-items:center;gap:18px}
-figure img{width:430px;box-shadow:10px 14px 24px rgba(12,2,8,.5)}
-figcaption{color:var(--candy);font-size:24px;display:flex;align-items:center;gap:10px}
+    c = tp_cards()
+    card = {d["name"]: d for d in load_tarot().load_deck()["cards"]}["The Receipt"]
+    cols = []
+    for i, m in enumerate(M.MOTIFS):
+        x = 60 + i * 520
+        cols.append(f"<img class='page' src='{(EX / f'week{suffix(m)}.png').as_uri()}' alt='' "
+                    f"style='left:{x}px;top:60px;width:300px;transform:rotate(-4deg)'>"
+                    + lay(c.front_html(card, m, None, None), x + 190, 120, 270, 5, 2)
+                    + f"<div class='cap' style='left:{x + 20}px'>{M.star('20px')} {esc(m)}</div>")
+    css = desk_css(1600, 780) + """
+.cap{position:absolute;top:700px;font-family:var(--pixel);font-size:24px;color:var(--candy);display:flex;gap:10px;align-items:center}
 """
     path = BUILD / "triptych.html"
-    path.write_text(page("analog-bag triptych", M.css() + css, f"<div class='row'>{cells}</div>"), encoding="utf-8")
+    path.write_text(card_page("analog-bag triptych", css, f"<div class='desk'>{''.join(cols)}</div>"), encoding="utf-8")
     png(path, IMG / "triptych.png", 1600, 780)
+
+
+def sheet(names: list[dict], out: Path, motif: str = "analog", cols: int = 6) -> None:
+    """A contact sheet: every card in a grid on the plum desk."""
+    c = tp_cards()
+    w, gap, pad = 300, 30, 60
+    h = round(w * 120 / 70)
+    rows = -(-len(names) // cols)
+    W, H = pad * 2 + cols * w + (cols - 1) * gap, pad * 2 + rows * h + (rows - 1) * gap
+    cells = "".join(
+        f"<div class='lay' style='left:{pad + (i % cols) * (w + gap)}px;top:{pad + (i // cols) * (h + gap)}px;"
+        f"width:{w}px;height:{h}px;--cw:{w}px;--ch:{h}px'>{c.front_html(d, motif, None, None)}</div>"
+        for i, d in enumerate(names))
+    path = BUILD / f"{out.stem}.html"
+    path.write_text(card_page(out.stem, desk_css(W, H), f"<div class='desk'>{cells}</div>"), encoding="utf-8")
+    png(path, out, W, H)
+
+
+def majors() -> None:
+    sheet(load_tarot().load_deck()["cards"][:22], IMG / "majors.png")
 
 
 IMAGES_MD = """# Images
@@ -165,27 +204,37 @@ Every image here is generated by `scripts/make-readme-images.py` from the tool i
 
 | File | What it is |
 |---|---|
-| `docs/img/hero.png` | The README hero: a y2k-blog window, analog-bag.exe, with three Hook Tarot cards, the LORE back and a pocket week |
-| `docs/img/triptych.png` | The same pocket week in analog, cyberpunk and y2k-blog |
+| `docs/img/hero.png` | The README hero: three HOOK ORACLE cards and the LORE back fanned over the pocket week, in the zine look |
+| `docs/img/triptych.png` | The Receipt card and the pocket week in analog, cyberpunk and y2k-blog |
+| `docs/img/majors.png` | All 22 Major Arcana on one sheet |
+| `examples/story.png` | One card as a 1080 x 1920 story, from a three-card pull |
 | `docs/img/step-01.svg` to `step-05.svg` | Pixel step badges for Start here |
 | `docs/img/divider.svg` | A gold pixel hairline between README sections |
 | `docs/img/heart.svg` | A pixel heart for If it goes wrong |
 | `examples/tarot-cards.png` | Three card fronts and a card back |
 | `examples/launch.png`, `launch-cyberpunk.png`, `launch-y2k-blog.png` | The launch page in each motif |
 | `examples/week.png`, `week-cyberpunk.png`, `week-y2k-blog.png` | The pocket week in each motif |
+
+The painted objects on the cards live in `tarot/objects/`. The prompts for the ten painted majors are in `docs/MAJORS-TO-PAINT.md`.
 """
 
 
 def main() -> int:
+    global STYLE
+    ap = argparse.ArgumentParser(description="Render the README images from the tool itself.")
+    ap.add_argument("--style", help="a style.json for every image (default: the bundled example)")
+    a = ap.parse_args()
     if not render.find_chrome():
         raise SystemExit("Chrome is needed to render the README images.")
-    S.use(str(S.BUNDLED))
+    STYLE = str(Path(a.style).resolve()) if a.style else str(S.BUNDLED)
+    S.use(STYLE)
     for d in (EX, IMG, BUILD):
         d.mkdir(parents=True, exist_ok=True)
     examples()
     svgs()
     hero()
     triptych()
+    majors()
     (ROOT / "docs" / "IMAGES.md").write_text(IMAGES_MD, encoding="utf-8")
     print("README images and examples rendered")
     return 0

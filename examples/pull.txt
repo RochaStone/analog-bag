@@ -1,4 +1,4 @@
-HOOK TAROT  three-card pull
+HOOK ORACLE three-card pull
 Topic: my spring retreat
 Audience: burnt-out founders
 

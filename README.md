@@ -5,11 +5,11 @@
 **A printable founder kit for your bag.**
 
 Plan offline, in pen.
-Pull three cards for your next post.
+Pull three cards for your next post, on paper or on screen.
 Lay your launch on the real moon.
 Photograph the page when you're done, and Claude reads it back into your tasks.
 
-<p align="center"><img src="docs/img/hero.png" width="800" alt="A cream 2003-style desktop window titled analog-bag.exe on a blush background tiled with gold pixel stars. Inside: three plum and gold Hook Tarot cards fanned, a pink lined THIS WEEK page, and a blog sidebar with about me, mood: full moon, currently reading the hook tarot, a guestbook and a visitor counter."></p>
+<p align="center"><img src="docs/img/hero.png" width="800" alt="Three HOOK ORACLE cards and a plum LORE card back fanned over a pink lined pocket week on a plum riso-dotted desk, with HOOK ORACLE in cut-out ransom letters."></p>
 
 <p align="center"><img src="docs/img/triptych.png" width="800" alt="The same pocket week three ways: pink lined paper, a plum console with a keypad of the seven days, and a cream thisweek.exe window with a moon sidebar."></p>
 
@@ -39,7 +39,7 @@ You'll see `Cloning into...` and then your cursor again.
 ```sh
 python3 ~/.claude/skills/analog-bag/tarot/pull.py --topic "my next post" --audience "my people"
 ```
-You'll see `HOOK TAROT  three-card pull` and three cards with their hook shapes.
+You'll see `HOOK ORACLE three-card pull` and three cards with their hook shapes.
 
 <img src="docs/img/step-05.svg" width="33" alt="05"> **Make your first page.** Open Claude Code in the folder where you want your pages kept (Claude Code is Claude working right inside your terminal). Then say: "Make my pocket week." You'll see `week.pdf` appear in that folder, ready to print.
 
@@ -48,8 +48,10 @@ Using the Claude desktop app instead? Go to [Claude Cowork](#claude-cowork): you
 <p align="center"><img src="docs/img/divider.svg" width="720" alt=""></p>
 
 ## What you get
-- **Hook Tarot.** 78 hook structures as a real deck. Print it, cut it, keep it in your bag. 22 Major Arcana for the big ideas (The Receipt, The One Woman Show, The Guest Check, Too Busy, The Hotline, The Front Page). Cups for story and feeling. Wands for bold and contrarian. Swords for questions and challenges. Pentacles for numbers, proof and results.
+- **HOOK ORACLE.** 78 hook structures as a real deck. Print it, cut it, keep it in your bag. 22 Major Arcana for the big ideas (The Receipt, The One Woman Show, The Guest Check, Too Busy, The Hotline, The Front Page). Cups for story and feeling. Wands for bold and contrarian. Swords for questions and challenges. Pentacles for numbers, proof and results.
 - **A three-card pull.** What they believe, what you'll say, what they'll do. Claude fills every blank with your topic, in your words.
+- **The oracle on screen.** Open `oracle.html` in your browser and pull on screen: shuffle, turn the cards, fill the pink blanks, copy the hook, save the spread as a story.
+- **Monthly sets.** A small new set of hook shapes each month, on top of the core 78.
 - **Sacred Launch Calendar.** Your launch in six stages: seed, build, open, peak, close, integrate. Each stage starts on a real moon phase, with two or three plain-language beats. One printable page, plus a calendar file for your phone.
 - **Pocket Week.** One A5 page. THIS WEEK. The one thing. Three moves. One number to watch. What you're letting go of. The moon for each day.
 - **The readback.** Snap a photo of any filled page. Claude reads your handwriting, ticks what's done and merges it into one running `tasks.md`. Nothing ever gets added twice, and nothing you finished gets unticked.
@@ -93,7 +95,9 @@ and print from there. Tell Claude your city so the moon lands on your local date
 ## How to use it
 **Pull three cards.** "Pull three cards for my retreat, for burnt-out founders." You get three hook shapes, filled in for you.
 
-**Print the deck.** "Print the hook tarot." Card stock, actual size, cut on the marks. Tarot size is 70 x 120 mm, four to a page. Want nine to a page? Ask for the mini size (63 x 88 mm). For backs, print double-sided and flip on the long edge.
+**Pull on screen.** Open `oracle.html` (double-click it in the kit's folder) to pull on screen. Type what it's about and who it's for, pick a spread (one card, two, three, or the full spread), press Pull the cards and tap each card to turn it. The pink blanks fill with your words as you type, and you can edit any of them. Copy hook puts one line on your clipboard. Save spread downloads a 1080 x 1920 picture for your stories. Everything stays on your computer: no account, nothing sent anywhere. Keep `oracle.html` next to the `tarot` folder so the card pictures load. To bake your own look in, run `python3 tarot/oracle.py --style style.json`, or press "use my style.json" on the page.
+
+**Print the deck.** "Print the hook oracle." Card stock, actual size, cut on the marks. Tarot size is 70 x 120 mm, four to a page. Want nine to a page? Ask for the mini size (63 x 88 mm). For backs, print double-sided and flip on the long edge.
 
 **Plan a launch.** "Make a moon launch calendar for my Spring Breath Retreat, starting 2 November, six weeks." Print the page, import `launch.ics` into your calendar, tick the beats in pen.
 
@@ -107,12 +111,27 @@ Prefer the terminal? Every piece runs on its own:
 ```sh
 python3 tarot/pull.py --topic "my spring retreat" --audience "burnt-out founders"
 python3 tarot/print.py --out out/
+python3 tarot/print.py --out out/ --set samhain-2026
+python3 tarot/oracle.py
 python3 launch/launch.py --offer "Spring Breath Retreat" --date 2026-11-02 --weeks 6 --out out/ --utc-offset +08:00
 python3 week/week.py --out out/ --motif y2k-blog
 python3 readback/merge.py tasks.md new.md
 ```
 
 <p align="center"><img src="examples/launch.png" width="380" alt="A pink lined A4 page: SACRED LAUNCH CALENDAR, Spring Breath Retreat, a plum moon strip and six stage cards with tick boxes."> <img src="examples/week.png" width="268" alt="An A5 pink lined page: THIS WEEK with a moon for each day, the one thing, three moves, one number to watch and a let go line."></p>
+
+<p align="center"><img src="docs/img/divider.svg" width="720" alt=""></p>
+
+## Monthly sets
+A new set of hook shapes comes out each month as a release, with a theme for the season. Each set is one file in `tarot/sets/`, and the core 78 in `tarot/sets/core.json` are always in the deck.
+The paid coven gets each set a week early.
+
+- **On screen.** Every set shows up in the set picker on `oracle.html`. A set released in the last 30 days wears a "new" tag. Turn it on to mix it into your pulls.
+- **In Claude.** Ask "pull three cards with the Samhain set", or add `--set samhain-2026` to `tarot/pull.py`.
+- **On paper.** `python3 tarot/print.py --out out/ --set samhain-2026` prints that set as its own little deck, with the set name on the front and back of every card.
+
+This month's set is **Samhain 2026**: eight hook shapes for releasing, harvesting and turning toward the dark half of the year.
+To update to a new month, run `git -C ~/.claude/skills/analog-bag pull`, or download the new zip.
 
 <p align="center"><img src="docs/img/divider.svg" width="720" alt=""></p>
 
@@ -134,8 +153,10 @@ The same file works across every Rocha Coded tool, so you make it once.
 | Path | What it is |
 |---|---|
 | `SKILL.md` | The instructions Claude follows for all four flows |
-| `tarot/deck.json` | The 78 cards: name, structure with `{slots}`, example, when to pull |
+| `tarot/sets/` | The cards: `core.json` holds the 78 (name, structure with `{slots}`, example, when to pull), and each monthly set is its own file |
+| `tarot/deck.json` | The spreads and their positions in plain words |
 | `tarot/pull.py`, `tarot/print.py` | The three-card pull and the printable deck |
+| `oracle.html`, `tarot/oracle.py` | The oracle on screen, and the script that builds it with your look |
 | `launch/launch.py` | The launch arc, the moon page, the `.md` and the `.ics` |
 | `week/week.py` | The Pocket Week page |
 | `core/motif.py` | The three looks: analog, cyberpunk and y2k-blog |
@@ -147,6 +168,8 @@ The same file works across every Rocha Coded tool, so you make it once.
 | `tests/` | `python3 -m unittest`. See [tests/TESTING.md](tests/TESTING.md) for what is and isn't tested |
 
 <p align="center"><img src="docs/img/divider.svg" width="720" alt=""></p>
+
+The deck was called Hook Tarot until October 2026.
 
 ## Licence
 MIT. See [LICENSE](LICENSE). Copyright (c) 2026 Rochelle Livingstone / Thriving Era Studio.

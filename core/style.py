@@ -25,7 +25,7 @@ FALLBACK_STACKS = {
     "masthead": "Georgia,'Times New Roman',serif",
     "label": "'Arial Narrow','Helvetica Neue',Arial,sans-serif",
     "body": "Georgia,'Times New Roman',serif",
-    "scrawl": "'Marker Felt','Chalkboard SE','Comic Sans MS',cursive",
+    "scrawl": "'Permanent Marker','Marker Felt','Chalkboard SE','Comic Sans MS',cursive",
     "script": "'Snell Roundhand','Apple Chancery',cursive",
     "mono": "'Courier New',monospace",
 }
@@ -85,6 +85,8 @@ def _merge(base: dict, user: dict) -> tuple[dict, list[str]]:
                     warnings.append(f"fonts.{k} '{v}' is not a plain font name, using the example's")
                     continue
                 out.setdefault(key, {})[k] = v
+        elif key in ("font_files", "tarot") and isinstance(val, dict):
+            out[key] = val
         elif isinstance(val, str) and val.strip():
             out[key] = val.strip()
         elif isinstance(val, list):
@@ -98,10 +100,54 @@ def use(explicit: str | None = None) -> dict:
     path = find_style(explicit)
     base = _read(BUNDLED)
     style, warnings = (base, []) if path == BUNDLED else _merge(base, _read(path))
+    style = dict(style)
+    _resolve_files(style, path.parent, warnings)
     _active, _source = style, str(path)
     for w in warnings:
         print(f"style: {w}")
     return style
+
+
+FONT_EXT = (".woff2", ".woff", ".ttf", ".otf")
+IMAGE_EXT = (".png", ".jpg", ".jpeg", ".webp")
+
+
+def _local(raw: object, base: Path, exts: tuple[str, ...], label: str, warnings: list[str]) -> str | None:
+    """A file path from style.json, relative to the style file, kept only if it exists
+    and has an allowed extension. Returns an absolute path or None."""
+    if not isinstance(raw, str) or not raw.strip():
+        return None
+    p = Path(raw.strip()).expanduser()
+    p = p if p.is_absolute() else (base / p)
+    if p.suffix.lower() not in exts:
+        warnings.append(f"{label} '{raw}' must end in {', '.join(exts)}, skipped")
+        return None
+    if not p.is_file():
+        warnings.append(f"{label} '{raw}' was not found, skipped")
+        return None
+    return str(p.resolve())
+
+
+def _resolve_files(style: dict, base: Path, warnings: list[str]) -> None:
+    """font_files: {role: "fonts/MyHand.woff2"} loads your own font file for that role.
+    tarot.objects: {"The Receipt" | card id | suit | "all": "art/receipt.png" | "none"}."""
+    files = {}
+    for role, raw in (style.get("font_files") or {}).items():
+        if role in FALLBACK_STACKS and style.get("fonts", {}).get(role):
+            hit = _local(raw, base, FONT_EXT, f"font_files.{role}", warnings)
+            if hit:
+                files[role] = hit
+    style["font_files"] = files
+    tarot = style.get("tarot") if isinstance(style.get("tarot"), dict) else {}
+    objects = {}
+    for key, raw in (tarot.get("objects") or {}).items():
+        if isinstance(raw, str) and raw.strip().lower() == "none":
+            objects[str(key).lower()] = "none"
+            continue
+        hit = _local(raw, base, IMAGE_EXT, f"tarot.objects.{key}", warnings)
+        if hit:
+            objects[str(key).lower()] = hit
+    style["tarot"] = {"objects": objects}
 
 
 def current() -> dict:
@@ -127,7 +173,13 @@ def fonts_link(style: dict) -> str:
              # pixel font for chrome labels in the cyberpunk and y2k-blog motifs
              '<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700'
              '&family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">']
+    own = style.get("font_files") or {}
     for role, name in style["fonts"].items():
+        if role in own:
+            if role == "scrawl":  # a hand font rarely has every glyph; the marker fills the gaps
+                links.append('<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker'
+                             '&display=swap" rel="stylesheet">')
+            continue  # served from the user's own font file
         fam = quote_plus(name)
         links.append(f'<link href="https://fonts.googleapis.com/css2?family={fam}&display=swap" rel="stylesheet">')
         if role in ("masthead", "body", "label"):  # extra weights; a 400 reply is harmless
@@ -146,7 +198,9 @@ def root_css(style: dict) -> str:
     def stack(role: str) -> str:
         return f"'{f[role]}',{FALLBACK_STACKS[role]}" if f.get(role) else FALLBACK_STACKS[role]
 
-    return (":root{" + colours + " --white:#FFFFFF;"
+    faces = "".join(f"@font-face{{font-family:'{f[role]}';src:url('{Path(path).as_uri()}')}}"
+                    for role, path in (style.get("font_files") or {}).items() if f.get(role))
+    return (faces + ":root{" + colours + " --white:#FFFFFF;"
             f" --didone:{stack('masthead')}; --tag:{stack('label')}; --body:{stack('body')};"
             f" --marker:{stack('scrawl')}; --script:{stack('script')}; --mono:{stack('mono')};"
             " --pixel:'Silkscreen','Pixelify Sans','Courier New',monospace;}" + BASE_CSS)

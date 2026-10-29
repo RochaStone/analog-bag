@@ -1,4 +1,4 @@
-"""The Hook Tarot deck: shape, slots, voice rules and the draw."""
+"""The HOOK ORACLE core deck: shape, slots, voice rules and the draw."""
 import re
 import unittest
 

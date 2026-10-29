@@ -1,4 +1,4 @@
-"""Gold line-art emblems for the Hook Tarot. Each is SVG drawn in a 100 x 100 box."""
+"""Gold line-art emblems for the HOOK ORACLE. Each is SVG drawn in a 100 x 100 box."""
 from __future__ import annotations
 
 import math

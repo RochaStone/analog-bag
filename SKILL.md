@@ -1,6 +1,6 @@
 ---
 name: analog-bag
-description: A printable founder kit for planning offline, in pen. Hook Tarot (78 hook structures as a printable deck, plus a three-card pull), Sacred Launch Calendar (a launch arc laid on the real moon phases, with an .ics), Pocket Week (an A5 weekly page) and readback (photograph a filled page and merge it into tasks.md). Use when the user says "hook tarot", "pull three cards", "launch calendar", "moon phase launch", "pocket week", "read my page", or asks for printable planning pages, hooks from a tarot deck, or a moon-timed launch.
+description: A printable founder kit for planning offline, in pen. HOOK ORACLE (78 hook structures as a printable deck, monthly sets, a three-card pull, and oracle.html to pull on screen), Sacred Launch Calendar (a launch arc laid on the real moon phases, with an .ics), Pocket Week (an A5 weekly page) and readback (photograph a filled page and merge it into tasks.md). Use when the user says "hook oracle", "hook tarot", "pull three cards", "launch calendar", "moon phase launch", "pocket week", "read my page", or asks for printable planning pages, hooks from a tarot deck, or a moon-timed launch.
 ---
 
 # Analog Bag
@@ -27,15 +27,19 @@ She may never have opened a terminal, and she may be a little nervous. Be warm, 
 - If she needs the terminal, tell her exactly what to type and what she'll see when it worked.
 - Never say "simply" or "just". If something fails, say it kindly, fix it, and tell her it happens to everyone.
 
-## 1. Hook Tarot
+## 1. HOOK ORACLE
 
-**Pull three cards** ("pull three cards", "hook tarot", "give me hooks"):
+The deck was called Hook Tarot; she may still call it that.
+
+**Pull three cards** ("pull three cards", "hook oracle", "hook tarot", "give me hooks"):
 
 ```sh
 python3 tarot/pull.py --topic "<what it's about>" --audience "<who it's for>"
 ```
 
-Optional: `--suit cups|wands|swords|pentacles`, `--majors`, `--seed N`, `--json`.
+Optional: `--suit cups|wands|swords|pentacles`, `--majors`, `--seed N`, `--json`, `--set <set id>`.
+The core 78 are always in the draw. `--set samhain-2026` adds that monthly set (the ids are the file
+names in `tarot/sets/`). Use it when she asks for this month's set or names a set.
 
 Ask what the post is about, then who it's for, one at a time, if she hasn't said. The draw is three positions: what they believe (past), what you'll say (present), what they'll
 do (future). Then you do the writing:
@@ -48,16 +52,31 @@ do (future). Then you do the writing:
 Suits: Cups are story and feeling. Wands are contrarian and bold. Swords are questions and
 challenges. Pentacles are numbers, proof and results. Major Arcana are big-idea hooks.
 
-**Print the deck** ("print the tarot", "make the cards"):
+**Pull on screen** ("pull on screen", "the oracle page", "shuffle the cards"): open oracle.html to pull on
+screen. It sits in this skill's folder and works offline from the file, with no account. Tell her the path,
+or open it for her (`open oracle.html` on a Mac). She types her topic and who it's for, picks a spread (one
+card, two, three or the full spread), pulls, and taps each card to turn it. The pink blanks fill as she types
+and she can edit any of them. "Copy hook" copies one hook; "Save spread" downloads a 1080 x 1920 story picture.
+Monthly sets are in the set picker. For her own look, run `python3 tarot/oracle.py --style <her style.json>
+--out <her folder>/oracle.html`, and copy the `tarot/objects` folder next to it so the pictures load, or have
+her press "use my style.json" on the page.
+
+**Print the deck** ("print the oracle", "print the tarot", "make the cards"):
 
 ```sh
 python3 tarot/print.py --out <folder>                  # tarot size 70 x 120 mm, 4 per page
 python3 tarot/print.py --out <folder> --size mini      # 63 x 88 mm, 9 per page
+python3 tarot/print.py --out <folder> --set samhain-2026   # one monthly set as its own deck
 ```
 
 `--paper letter` for US paper. `--backs interleave` (default) alternates fronts and backs for a
 double-sided print, flip on the long edge. `--backs end` adds one back page, `none` skips them.
-Tell her: card stock, print at 100%, cut on the marks.
+Tell her: card stock, print at 100%, cut on the marks. The files are `hook-oracle.pdf` (or
+`hook-oracle-<set>.pdf` for a set).
+
+**Monthly sets.** Each month a new set ships as a release: a file in `tarot/sets/` with
+`{"set", "name", "released", "theme", "cards"}`. The paid coven gets it a week early. Never write
+new cards for a set yourself; the sets come from Rocha.
 
 ## 2. Sacred Launch Calendar
 

@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-"""Print the whole Hook Tarot deck: fronts and backs, ready to cut.
+"""Print the whole HOOK ORACLE deck: fronts and backs, ready to cut.
 
     python3 tarot/print.py --out out/                 # tarot size 70 x 120 mm, 4 per page
     python3 tarot/print.py --out out/ --size mini     # 63 x 88 mm, 9 per page
     python3 tarot/print.py --out out/ --only "The Receipt,Ace of Cups" --strip cards.png
+    python3 tarot/print.py --out out/ --set samhain-2026   # one monthly set as its own mini deck
 
 Fronts and backs alternate page by page so a double-sided print (flip on long edge)
-lines the backs up behind the fronts. Writes hook-tarot.html, and hook-tarot.pdf when
+lines the backs up behind the fronts. Writes hook-oracle.html, and hook-oracle.pdf when
 Chrome is available.
 """
 from __future__ import annotations
@@ -22,42 +23,17 @@ sys.path.insert(0, str(ROOT / "tarot"))
 from core import render  # noqa: E402
 from core import motif as M  # noqa: E402
 from core import style as S  # noqa: E402
-from core.style import esc, moon_svg, page  # noqa: E402
-from glyphs import glyph_svg  # noqa: E402
+from core.style import esc, page  # noqa: E402
+import cards as C  # noqa: E402
 from pull import load_deck  # noqa: E402
 
 SIZES = {"tarot": (70.0, 120.0, 2, 2, 1.0), "mini": (63.0, 88.0, 3, 3, 0.8)}
 PAPERS = {"a4": (210.0, 297.0), "letter": (215.9, 279.4)}
-SUIT_SYMBOL = {"cups": "Cups", "wands": "Wands", "swords": "Swords", "pentacles": "Pentacles"}
 
-CSS = """
+SHEET_CSS = """
 @page{size:var(--pw) var(--ph);margin:0}
 body{background:#fff}
 .sheet{position:relative;width:var(--pw);height:var(--ph);overflow:hidden;page-break-after:always;break-after:page;background:#fff}
-.card{position:absolute;width:var(--cw);height:var(--ch);background:var(--plum);color:var(--cream);overflow:hidden;
-  font-size:calc(11.6pt*var(--s))}
-.frame{position:absolute;inset:calc(3mm*var(--s));border:.35mm solid var(--gold);border-radius:1.6mm}
-.frame::after{content:"";position:absolute;inset:.9mm;border:.2mm solid var(--gold);border-radius:1.1mm;opacity:.7}
-.inner{position:absolute;inset:calc(5.5mm*var(--s));display:flex;flex-direction:column;align-items:center;text-align:center}
-.top{color:var(--gold);font-size:.66em;display:flex;justify-content:space-between;width:100%}
-.glyph{margin:calc(1.6mm*var(--s)) 0 calc(.8mm*var(--s))}
-.name{font-family:var(--didone);font-weight:700;color:var(--candy);font-size:1.5em;line-height:1.02;text-transform:uppercase;letter-spacing:.02em}
-.title{font-family:var(--didone);font-style:italic;color:var(--candy);font-size:.95em;margin-top:.4mm}
-.rule{width:40%;height:0;border-top:.25mm solid var(--gold);margin:calc(1.6mm*var(--s)) auto}
-.structure{font-size:.92em;line-height:1.3}
-.structure b{color:var(--gold);font-weight:600}
-.example{font-style:italic;font-size:.74em;line-height:1.3;opacity:.82;margin-top:calc(3mm*var(--s))}
-.stars{margin-top:auto;color:var(--gold);font-size:.7em;letter-spacing:.6em;opacity:.8}
-.when{margin-top:calc(2mm*var(--s));font-size:.58em;color:var(--gold);line-height:1.25}
-.when .tag{display:block;font-size:.95em;margin-bottom:.4mm}
-.back{display:flex;align-items:center;justify-content:center}
-.back .inner{justify-content:center;gap:calc(3mm*var(--s))}
-.back .word{font-family:var(--didone);color:var(--candy);font-size:1.7em;letter-spacing:.12em;text-transform:uppercase}
-.back .moons{display:flex;gap:1.2mm}
-.back .sub{color:var(--gold);font-size:.62em}
-.back .lore.pixel{font-family:var(--pixel);font-size:2.6em;transform:none;letter-spacing:.06em}
-.back .lore{font-family:var(--marker);color:var(--candy);font-size:3.2em;line-height:1;transform:rotate(-4deg)}
-.back .under{font-family:var(--didone);font-style:italic;color:var(--cream);font-size:.8em;margin-top:-1mm}
 .cut{position:absolute;border-color:#9b8a93;border-style:dashed;border-width:0}
 .cut.v{border-left-width:.2mm;width:0}
 .cut.h{border-top-width:.2mm;height:0}
@@ -67,6 +43,7 @@ body{background:#fff}
 .strip .card:nth-child(odd){transform:rotate(-2deg)}
 .strip .card:nth-child(even){transform:rotate(2deg)}
 """
+CSS = SHEET_CSS + C.css()
 
 
 def slotted(text: str) -> str:
@@ -82,35 +59,17 @@ def slotted(text: str) -> str:
     return "".join(out)
 
 
-def front(card: dict, size: str, x: float, y: float) -> str:
-    s = SIZES[size][4]
-    if card["arcana"] == "major":
-        left, right, glyph, title = card["numeral"], "Major Arcana", card["glyph"], ""
-    else:
-        left, right, glyph = card["rank"], SUIT_SYMBOL[card["suit"]], card["suit"]
-        title = f"<div class='title'>{esc(card['title'])}</div>"
-    example = "" if size == "mini" else f"<div class='example'>{esc(card['example'])}</div>"
-    return (f"<div class='card' style='left:{x}mm;top:{y}mm'><div class='frame'></div><div class='inner'>"
-            f"<div class='top tag'><span>{esc(left)}</span><span>{esc(right)}</span></div>"
-            f"<div class='glyph'>{glyph_svg(glyph, round(30 * s, 1), S.color('gold'))}</div>"
-            f"<div class='name'>{esc(card['name'])}</div>{title}<div class='rule'></div>"
-            f"<div class='structure'>{slotted(card['structure'])}</div>{example}"
-            f"<div class='stars'>&#10022; &#10022; &#10022;</div><div class='when'><span class='tag'>Pull it when</span>{esc(card['when_to_pull'])}</div>"
-            f"</div></div>")
+def front(card: dict, size: str, x: float, y: float, motif: str = "analog") -> str:
+    return C.front_html(card, motif, x, y)
 
 
-def back(size: str, x: float, y: float, motif: str = "analog") -> str:
-    s = SIZES[size][4]
-    st = S.current()
-    lore_cls = "lore pixel" if motif == "cyberpunk" else "lore"
-    stamp = (f"<div class='{lore_cls}'>{esc(S.line('stamp'))}</div>" if S.line("stamp") else "") + (
-        f"<div class='under'>{esc(S.line('scrawl'))}</div>" if S.line("scrawl") else "")
-    handle = f" &middot; {esc(st['handle'])}" if st.get("handle") else ""
-    moons = "".join(moon_svg(a, round(6 * s, 1)) for a in (0.12, 0.25, 0.5, 0.75, 0.88))
-    return (f"<div class='card back' style='left:{x}mm;top:{y}mm'><div class='frame'></div><div class='inner'>"
-            f"<div class='moons'>{moons}</div>{glyph_svg('eye', round(30 * s, 1), S.color('gold'))}"
-            f"{stamp}<div class='sub tag'>Hook Tarot{handle}</div>"
-            f"<div class='moons'>{moons}</div></div></div>")
+def back(size: str, x: float, y: float, motif: str = "analog", set_name: str = "") -> str:
+    return C.back_html(motif, x, y, set_name)
+
+
+def head() -> str:
+    """Extra font links and the motif tile, placed first in the body."""
+    return C.fonts_extra() + f"<style>{C.tile_css()}</style>"
 
 
 def cuts(cols: int, rows: int, cw: float, ch: float, mx: float, my: float, pw: float, ph: float) -> str:
@@ -131,7 +90,7 @@ def cuts(cols: int, rows: int, cw: float, ch: float, mx: float, my: float, pw: f
 
 
 def build_html(cards: list[dict], size: str = "tarot", paper: str = "a4", backs: str = "interleave",
-               motif: str = "analog") -> str:
+               motif: str = "analog", set_name: str = "") -> str:
     cw, ch, cols, rows, s = SIZES[size]
     pw, ph = PAPERS[paper]
     mx, my = (pw - cols * cw) / 2, (ph - rows * ch) / 2
@@ -143,8 +102,8 @@ def build_html(cards: list[dict], size: str = "tarot", paper: str = "a4", backs:
         f_html, b_html = [], []
         for i, card in enumerate(chunk):
             r, c = divmod(i, cols)
-            f_html.append(front(card, size, mx + c * cw, my + r * ch))
-            b_html.append(back(size, mx + (cols - 1 - c) * cw, my + r * ch, motif))
+            f_html.append(front(card, size, mx + c * cw, my + r * ch, motif))
+            b_html.append(back(size, mx + (cols - 1 - c) * cw, my + r * ch, motif, set_name))
         fronts.append(f"<section class='sheet'>{''.join(f_html)}{marks}</section>")
         backs_pages.append(f"<section class='sheet'>{''.join(b_html)}{marks}</section>")
     if backs == "interleave":
@@ -154,15 +113,15 @@ def build_html(cards: list[dict], size: str = "tarot", paper: str = "a4", backs:
     else:
         sheets = fronts
     vars_css = f":root{{--pw:{pw}mm;--ph:{ph}mm;--cw:{cw}mm;--ch:{ch}mm;--s:{s}}}"
-    return page("Hook Tarot", vars_css + CSS, "".join(sheets))
+    return page(f"HOOK ORACLE {set_name}".strip(), vars_css + CSS, head() + "".join(sheets))
 
 
-def build_strip(cards: list[dict], size: str = "tarot", motif: str = "analog") -> str:
+def build_strip(cards: list[dict], size: str = "tarot", motif: str = "analog", set_name: str = "") -> str:
     cw, ch, _, _, s = SIZES[size]
-    items = [front(c, size, 0, 0) for c in cards] + [back(size, 0, 0, motif)]
+    items = [front(c, size, 0, 0, motif) for c in cards] + [back(size, 0, 0, motif, set_name)]
     vars_css = f":root{{--pw:210mm;--ph:297mm;--cw:{cw}mm;--ch:{ch}mm;--s:{s}}}"
-    return page("Hook Tarot sample", vars_css + CSS + "body{background:var(--paper)}",
-                f"<div class='strip'>{''.join(items)}</div>")
+    return page("HOOK ORACLE sample", vars_css + CSS + "body{background:var(--paper)}",
+                head() + f"<div class='strip'>{''.join(items)}</div>")
 
 
 def pick(deck: dict, names: str) -> list[dict]:
@@ -175,7 +134,7 @@ def pick(deck: dict, names: str) -> list[dict]:
 
 
 def main(argv: list[str] | None = None) -> int:
-    ap = argparse.ArgumentParser(description="Print the Hook Tarot deck.")
+    ap = argparse.ArgumentParser(description="Print the HOOK ORACLE deck.")
     ap.add_argument("--out", default="out", help="folder for the files")
     ap.add_argument("--size", choices=SIZES, default="tarot")
     ap.add_argument("--paper", choices=PAPERS, default="a4")
@@ -183,20 +142,25 @@ def main(argv: list[str] | None = None) -> int:
                     help="interleave for double-sided, end for one back page, none to skip")
     ap.add_argument("--only", help="comma-separated card names to print instead of the whole deck")
     ap.add_argument("--strip", help="write a PNG sample strip of the --only cards to this path")
+    ap.add_argument("--set", default="core", help="which set to print: core (the 78) or a monthly set "
+                    "such as samhain-2026, printed as its own mini deck with its name on face and back")
     ap.add_argument("--style", help="a style.json (default: ./style.json, then ~/.rocha-coded/style.json)")
-    ap.add_argument("--motif", choices=M.CHOICES, help="card backs: cyberpunk gives a pixel stamp (fronts stay plum and gold)")
+    ap.add_argument("--motif", choices=M.CHOICES, help="the card look: analog (blush riso stock), cyberpunk (plum stock, pixel chrome) "
+                         "or y2k-blog (cream stock, window bar); default from style.json")
     ap.add_argument("--html-only", action="store_true", help="skip Chrome, write HTML only")
     a = ap.parse_args(argv)
     S.use(a.style)
     print(f"Style: {S.current().get('name') or 'unnamed'} ({S.source()})")
-    deck = load_deck()
+    deck = load_deck(sets=[a.set])
     cards = pick(deck, a.only) if a.only else deck["cards"]
+    set_name = "" if a.set == "core" else deck["set_names"][a.set]
+    stem = "hook-oracle" if a.set == "core" else f"hook-oracle-{a.set}"
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
 
     if a.strip:
-        html_path = out / "hook-tarot-strip.html"
-        html_path.write_text(build_strip(cards, a.size, M.resolve(a.motif)), encoding="utf-8")
+        html_path = out / f"{stem}-strip.html"
+        html_path.write_text(build_strip(cards, a.size, M.resolve(a.motif), set_name), encoding="utf-8")
         cw, ch = SIZES[a.size][:2]
         w = int(((cw + 9) * (len(cards) + 1) + 11) * 96 / 25.4)
         h = int((ch + 21) * 96 / 25.4)
@@ -204,16 +168,16 @@ def main(argv: list[str] | None = None) -> int:
         print(f"strip: {a.strip}" if ok else f"strip not rendered ({err}). HTML: {html_path}")
         return 0
 
-    html_path = out / "hook-tarot.html"
-    html_path.write_text(build_html(cards, a.size, a.paper, a.backs, M.resolve(a.motif)), encoding="utf-8")
+    html_path = out / f"{stem}.html"
+    html_path.write_text(build_html(cards, a.size, a.paper, a.backs, M.resolve(a.motif), set_name), encoding="utf-8")
     per = SIZES[a.size][2] * SIZES[a.size][3]
     pages = -(-len(cards) // per)
-    print(f"Hook Tarot: {len(cards)} cards, {a.size} size, {per} per {a.paper.upper()} page, "
+    print(f"HOOK ORACLE {set_name or 'core deck'}: {len(cards)} cards, {a.size} size, {per} per {a.paper.upper()} page, "
           f"{pages} front pages, backs: {a.backs}")
     if a.html_only:
         print(f"HTML: {html_path}")
         return 0
-    pdf = out / "hook-tarot.pdf"
+    pdf = out / f"{stem}.pdf"
     ok, err = render.html_to_pdf(html_path, pdf)
     print(f"PDF: {pdf}" if ok else render.fallback_note(html_path) + (f"\n({err})" if err else ""))
     print("Print at 100% (actual size). For backs, print double-sided and flip on the long edge.")
